@@ -23,3 +23,7 @@ Then(/^I should get an error on saving that I left teh SubFund Group Code field 
   on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
  # end
 end
+
+When(/^I Create an Account and leave every field blank$/) do
+  @account = create AccountObject
+end

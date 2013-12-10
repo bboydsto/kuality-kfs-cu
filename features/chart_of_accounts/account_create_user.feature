@@ -8,6 +8,6 @@ Feature: Create Account KFSMI-8332
 #    Given I am backdoored as bla
 
   Scenario: KFS User does not input in any fields KFSMI-8332
-    Given  I am logged in as a KFS user
+    Given  I am logged in as a KFS User
     When   I Create an Account and leave every field blank
     Then   I should get an error saying I left every field blank
