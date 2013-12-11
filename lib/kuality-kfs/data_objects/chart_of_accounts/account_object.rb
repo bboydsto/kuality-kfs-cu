@@ -59,6 +59,7 @@ class AccountObject < DataObject
                :manager_principal_name, :budget_record_level_cd, :sufficient_funds_cd, :expense_guideline_text,
                :income_guideline_txt, :purpose_text, :income_stream_financial_cost_cd, :income_stream_account_number
       page.save
+      @document_id = page.document_id
     end
   end
 
@@ -66,5 +67,7 @@ class AccountObject < DataObject
     on(AccountPage).submit
   end
 
-
+  def view
+    @browser.goto "#{$base_url}kew/DocHandler.do?command=displayDocSearchView&docId=#{@document_id}"
+  end
 end
