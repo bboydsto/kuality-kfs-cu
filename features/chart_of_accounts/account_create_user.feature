@@ -5,7 +5,7 @@ Feature: Create Account KFSMI-8332
   because this will help data entry procedures.
 
 #  Background:
-#    Given I am backdoored as bla
+#    Given I am logged in via CUWebLogin
 
   Scenario: KFS User does not input in any fields KFSMI-8332
     Given  I am logged in as a KFS User
