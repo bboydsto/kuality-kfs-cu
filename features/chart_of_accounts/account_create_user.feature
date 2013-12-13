@@ -4,9 +4,6 @@ Feature: Create Account KFSMI-8332
   when I leave all fields blank during Create an Account
   because this will help data entry procedures.
 
-#  Background:
-#    Given I am logged in via CUWebLogin
-
   Scenario: KFS User does not input in any fields KFSMI-8332
     Given  I am logged in as a KFS User
     When   I Create an Account and leave every field blank
