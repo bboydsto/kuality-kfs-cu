@@ -1,0 +1,4 @@
+required:
+  create:
+    - "Document Description (Description) is a required field."
+    - "Sub-Fund Group Code (SubFundGrpCd) is a required field."

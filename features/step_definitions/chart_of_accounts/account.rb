@@ -50,5 +50,11 @@ When /^I Create an Account and leave every field blank$/ do
 end
 
 Then /^I should get an error saying I left every field blank$/ do
-  on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
+  # TODO: Perhaps this will be provided by a service?
+  @account_errors = YAML.load_file("#{File.dirname(__FILE__)}/../../../lib/resources/errors/account.yml")["required"]["create"]
+
+  # TODO: Realistically, we will need to cycle through submitting and checking. However, we're still hashing that out.
+  @account_errors.each do |error_msg|
+    on(AccountPage).errors.should include error_msg
+  end
 end
