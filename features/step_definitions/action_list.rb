@@ -21,3 +21,14 @@ When /^I route the (.*) document to (.*) by clicking (.*) for each request$/ do 
   end
 
 end
+
+When /^I use my Action List to route the (.*) document to (.*) by clicking (.*) for each request$/ do |document, target_status, button|
+  step "I view the #{document} document on my action list"
+
+  unless on(KFSBasePage).document_status == target_status
+    step 'I switch to the user with the next Pending Action in the Route Log'
+    step "I view the #{document} document on my action list"
+    step "I #{button} the #{document} document if it is not already FINAL"
+  end
+
+end
