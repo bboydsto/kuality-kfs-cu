@@ -17,10 +17,10 @@ Feature: PURAP e-SHOP Create
     And   I view my e-SHOP Cart
     And   I add a note to my e-SHOP Cart
     And   I save my e-SHOP Cart
-    And   I assign my e-SHOP Cart to "spp7"
+    And   I assign my e-SHOP Cart to an e-SHOP assignee
     Then  I should be congratulated on a successful e-SHOP Cart assignment
 
-    Given I login as a e-SHOP assignee
+    Given I login as an e-SHOP assignee
     When  I retrieve my e-SHOP Cart
     And   I submit the e-SHOP Cart
     And   I close the Requisition document, saving it if necessary
@@ -35,6 +35,22 @@ Feature: PURAP e-SHOP Create
     And   the Payment Request Positive Approval Required field equals "No"
 
     Given I use my Action List to route the Requisition document to FINAL by clicking approve for each request
-    
+    When  I view the Purchase Order document
+    Then  the document status is FINAL
+    And   the Purchase Order Doc Status is Open
 
+    # PO KFS -> SciQuest
+    Given I login as an e-SHOP assignee
+    When  I open the Purchase Order document by searching for it in e-SHOP
+    Then  the e-SHOP document status is Completed
+    And   the Delivery Instructions displayed match what came from the Purchase Order
+    And   the Notes to Supplier displayed match what came from the Purchase Order
+    And   the Attachments for Supplier match what came from the Purchase Order
 
+    # KFS Batch Processing for PO
+    Given I am logged in as a KFS System Administrator
+    Then  the Object Codes for the Purchase Order document appear in the document's GLPE entry
+    Given Nightly Batch Jobs run
+    Then  the Purchase Order document has matching GL and GLPE offsets
+    Given I run Auto Close Purchase Orders
+    Then  the Auto Close Purchase Orders job completes successfully
