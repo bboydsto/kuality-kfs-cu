@@ -151,3 +151,11 @@ end
 Given /^I am logged in as a Commodity Reviewer$/ do
   visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
 end
+
+Given /^I login as an e-SHOP Buyer$/ do
+  visit(BackdoorLoginPage).login_as('blp8') #TODO get from role service
+end
+
+Given /^I login as an e-SHOP assignee$/ do
+  visit(BackdoorLoginPage).login_as('spp7') #TODO get from role service
+end

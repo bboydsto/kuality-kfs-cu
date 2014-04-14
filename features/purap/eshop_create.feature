@@ -5,6 +5,7 @@ Feature: PURAP e-SHOP Create
   @KFSQA-732 @purap @cornell
   Scenario: PURAP E2E e-SHOP shopper test
     Given I login as an e-SHOP Buyer
+    And   I visit the "e-SHOP" page
     And   I select a e-SHOP Hosted Supplier
     When  I search for an item with the following qualifications:
       | Minimum Price            | 1500  |
@@ -53,4 +54,4 @@ Feature: PURAP e-SHOP Create
     Given Nightly Batch Jobs run
     Then  the Purchase Order document has matching GL and GLPE offsets
     Given I run Auto Close Purchase Orders
-    Then  the Auto Close Purchase Orders job completes successfully
+    Then  the job completes successfully
