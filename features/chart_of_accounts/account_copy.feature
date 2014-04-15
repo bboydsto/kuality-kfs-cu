@@ -2,6 +2,10 @@ Feature: KFS Fiscal Officer Account Copy
 
   [smoke] As a KFS Fiscal Officer I want to copy an Account
           because I want quickly create many accounts.
+  [KFSQA-838] The proper routing of a copied C&G Account with Cornell specific attributes. 
+              We are testing that any non-super user perform. This is a smoke test of 
+              Cornell-specific attributes in a copied document. We are testing the proper 
+              routing of the Cornell specific attributes in a copied document. 
 
   @smoke @hare
   Scenario: Copy an Account
@@ -13,16 +17,27 @@ Feature: KFS Fiscal Officer Account Copy
 
   @KFSQA-838 @smoke @wip
   Scenario: Copy C&G Account (Smoke Test)
-    Given I am logged in as a non-admin user
-    And Go to Account 1258320
-    And Copy
-    And Select COA Appropriation Number
-    And Choose Labor Benefit Rate Category
-    .
-    .
-    .
-    And eVerify indicator is "N"
-    And Submit
-    Then Verify proper routing to FO
-    Then Verify Proper Routing to Sub Fund Reviewer
-    Then Verify FYI to Acct Super
+    Given I am logged in as a KFS User
+    When  I start to copy a C&G Account
+    Then  all default fields are filled in for the new Account
+    When  I fill in the missing required fields for the new Account
+    And   I fill in the missing Cornell-specific fields for the new Account
+    And   I submit the Account document
+    Then  the document goes to ENROUTE
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Fiscal Officer
+    When  I switch to the user with the next Pending Action in the Route Log for the Account document
+    And   I approve the Account document
+    Then  the document should have no errors
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS C&G Processor # Verify role name
+    When  I switch to the user with the next Pending Action in the Route Log for the Account document
+    And   I approve the Account document
+    Then  the document should have no errors
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Sub Fund Reviewer # Verify role name
+    When  I switch to the user with the next Pending Action in the Route Log for the Account document
+    And   I approve the Account document
+    Then  the document should have no errors
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Account Supervisor # Verify role name
+    When  I switch to the user with the next Pending Action in the Route Log for the Account document
+    And   I approve the Account document
+    Then  the document should have no errors
+    And   the Account document goes to FINAL
