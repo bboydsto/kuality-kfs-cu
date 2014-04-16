@@ -23,21 +23,24 @@ Feature: KFS Fiscal Officer Account Copy
     When  I fill in the missing required fields for the new Account
     And   I fill in the missing Cornell-specific fields for the new Account
     And   I submit the Account document
-    Then  the document goes to ENROUTE
+    Then  the Account document goes to ENROUTE
     And   the next pending action for the Account document is an APPROVE from a KFS-SYS Fiscal Officer
     When  I switch to the user with the next Pending Action in the Route Log for the Account document
     And   I approve the Account document
-    Then  the document should have no errors
-    And   the next pending action for the Account document is an APPROVE from a KFS-SYS C&G Processor # Verify role name
+    Then  The document should have no errors
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS C&G Processor
+    # Verify role name
     When  I switch to the user with the next Pending Action in the Route Log for the Account document
     And   I approve the Account document
-    Then  the document should have no errors
-    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Sub Fund Reviewer # Verify role name
+    Then  The document should have no errors
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Sub Fund Reviewer
+    # Verify role name
     When  I switch to the user with the next Pending Action in the Route Log for the Account document
     And   I approve the Account document
-    Then  the document should have no errors
-    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Account Supervisor # Verify role name
+    Then  The document should have no errors
+    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Account Supervisor
+    # Verify role name
     When  I switch to the user with the next Pending Action in the Route Log for the Account document
     And   I approve the Account document
-    Then  the document should have no errors
+    Then  The document should have no errors
     And   the Account document goes to FINAL
