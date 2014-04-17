@@ -2,6 +2,7 @@ And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
   button.gsub!(' ', '_')
   @account = create AccountObject, press: button
   sleep 10 if (button == 'blanket_approve') || (button == 'approve')
+  step 'I add the account to the stack'
 end
 
 And /^I copy an Account$/ do
@@ -19,14 +20,17 @@ And /^I copy an Account$/ do
     page.save
     page.left_errmsg_text.should include 'Document was successfully saved.'
   end
+  step 'I add the account to the stack'
 end
 
 And /^I save an Account with a lower case Sub Fund Program$/ do
   @account = create AccountObject, sub_fund_group_code: 'board', press: :save
+  step 'I add the account to the stack'
 end
 
 When /^I submit an account with blank SubFund group Code$/ do
   @account = create AccountObject, sub_fund_group_code: '', press: :submit
+  step 'I add the account to the stack'
 end
 
 Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
@@ -54,6 +58,7 @@ And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
     page.subfund_program_code.set 'board'
     page.save
   end
+  step 'I add the account to the stack'
 end
 
 When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
@@ -63,6 +68,7 @@ When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
     page.subfund_program_code.set sub_fund_program_code
     page.save
   end
+  step 'I add the account to the stack'
 end
 
 Then /^an error in the (.*) tab should say "(.*)"$/ do |tab, error|
@@ -90,6 +96,7 @@ When /^I enter (.*) as an invalid Major Reporting Category Code$/  do |major_rep
     page.major_reporting_category_code.fit major_reporting_category_code
     page.save
   end
+  step 'I add the account to the stack'
 end
 
 When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriation_account_number|
@@ -99,6 +106,7 @@ When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriat
     page.appropriation_account_number.fit appropriation_account_number
     page.save
   end
+  step 'I add the account to the stack'
 end
 
 When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_benefit_rate_category_code|
@@ -108,6 +116,7 @@ When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_
     page.labor_benefit_rate_category_code.fit labor_benefit_rate_category_code
     page.save
   end
+  step 'I add the account to the stack'
 end
 
 When /^I save an Account document with only the ([^"]*) field populated$/ do |field|
@@ -147,6 +156,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
   end
 
   @account = create AccountObject, default_fields.merge({press: :save})
+  step 'I add the account to the stack'
 end
 
 And /^I edit an Account$/ do
@@ -161,6 +171,7 @@ And /^I edit an Account$/ do
     @account.document_id = page.document_id
     @account.description = page.description
   end
+  step 'I add the account to the stack'
 end
 
 When /^I input a lowercase Major Reporting Category Code value$/  do
@@ -174,7 +185,7 @@ And /^I create an Account with an Appropriation Account Number of (.*) and Sub-F
     page.subfund_program_code.set subfund_program_code
     @account.document_id = page.document_id
   end
-
+  step 'I add the account to the stack'
 end
 
 And /^I enter Sub Fund Group Code of (.*)/ do |sub_fund_group_code|
@@ -232,12 +243,6 @@ And /^I enter a Continuation Account Number that equals the Account Number$/ do
   on(AccountPage) { |page| page.continuation_account_number.fit page.original_account_number }
 end
 
-Then /^an empty error should appear$/ do
-  on AccountPage do |page|
-    page.error_message_of('').should exist
-  end
-end
-
 And /^I clone a random Account with the following changes:$/ do |table|
   puts get_parameter_values('KFS-AR', 'CONTACTS_TEXT')
   puts get_parameter_values('KFS-AR', 'ALLOW_SALES_TAX_LIABILITY_ADJUSTMENT_IND').inspect
@@ -262,6 +267,7 @@ And /^I clone a random Account with the following changes:$/ do |table|
     page.number.fit @account.number
     page.blanket_approve
   end
+  step 'I add the account to the stack'
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
@@ -302,7 +308,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.blanket_approve
     end
 
-    @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
+    step 'I add the account to the stack'
   end
 end
 
@@ -331,6 +337,7 @@ And /^I find an expired Account$/ do
     @account.number = page.results_table[account_row_index][page.column_index(:account_number)].text
     @account.chart_code = page.results_table[account_row_index][page.column_index(:chart_code)].text
     @account.account_expiration_date = DateTime.strptime(page.results_table[account_row_index][page.column_index(:account_expiration_date)].text, '%m/%d/%Y')
+    step 'I add the account to the stack'
   end
 end
 
@@ -349,8 +356,35 @@ And /^I use these Accounts:$/ do |table|
       @account = make AccountObject
       @account.number = page.results_table[1][page.column_index(:account_number)].text
       @account.chart_code = page.results_table[1][page.column_index(:chart_code)].text
-      @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
+      step 'I add the account to the stack'
     end
   end
 
+end
+
+And /^I fill in the missing required fields for the new Account$/ do
+  # We expect to already be on a Account document create/copy/edit page
+  @account.fill_out_required_attributes
+end
+
+And /^I fill in the missing Cornell-specific fields for the new Account$/ do
+  # We expect to already be on a Account document create/copy/edit page
+  @account.fill_out_extended_attributes(:required)
+end
+
+When /^I start to copy a C&G Account$/ do
+  # Look up our default C&G Account
+  # I click copy
+  # I make the data object by absorbing the 'Old' Account information
+  pending
+end
+
+And /^all default fields are filled in for the new Account$/ do
+  # I make a temporary data object by absorbing the 'New' Account information
+  # I compare that 'New' d.o. to the 'Old' d.o. (@account)
+  pending
+end
+
+And /^I add the account to the stack$/ do
+  @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
 end
