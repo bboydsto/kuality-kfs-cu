@@ -71,15 +71,6 @@ When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   step 'I add the account to the stack'
 end
 
-Then /^an error in the (.*) tab should say "(.*)"$/ do |tab, error|
-  hash = {'Account Maintenance' => :account_maintenance_errors}
-
-  on AccountPage do |page|
-    page.send(hash[tab]).should include error
-  end
-
-end
-
 And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
   visit(MainPage).account
   on AccountLookupPage do |page|
@@ -142,7 +133,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       budget_record_level_code: 'C - Consolidation',
       sufficient_funds_code:    'C - Consolidation',
       expense_guideline_text: 'expense guideline text',
-      income_guideline_txt:   'incomde guideline text',
+      income_guideline_text:   'income guideline text',
       purpose_text:           'purpose text',
       income_stream_financial_cost_code:  'IT - Ithaca Campus',
       income_stream_account_number:     '1000710',
@@ -373,10 +364,23 @@ And /^I fill in the missing Cornell-specific fields for the new Account$/ do
 end
 
 When /^I start to copy a C&G Account$/ do
-  # Look up our default C&G Account
-  # I click copy
-  # I make the data object by absorbing the 'Old' Account information
+  visit(MainPage).account
+  on AccountLookupPage do |l|
+    l.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    l.account_number.fit '1258320' # TODO: Replace account number with ParameterConstants::DEFAULT_CONTRACTS_AND_GRANTS_ACCOUNT_NUMBER or somesuch
+    l.search
+
+    l.item_row('1258320').exist?.should # TODO: Replace account number with ParameterConstants::DEFAULT_CONTRACTS_AND_GRANTS_ACCOUNT_NUMBER or somesuch
+    l.copy_random
+  end
+
+  @account = make AccountObject
+  @account.absorb(:original)
+  puts @account.inspect
+  @account.absorb(:new)
+  puts @account.inspect
   pending
+  step 'I add the account to the stack'
 end
 
 And /^all default fields are filled in for the new Account$/ do
