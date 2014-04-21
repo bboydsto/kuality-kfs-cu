@@ -137,7 +137,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       purpose_text:           'purpose text',
       income_stream_financial_cost_code:  'IT - Ithaca Campus',
       income_stream_account_number:     '1000710',
-      labor_benefit_rate_cat_code:      'CC'
+      labor_benefit_rate_category_code:      'CC' # TODO: This is a Cornell mod
   }
 
   # TODO: Make the Account document creation with a single field step more flexible.
@@ -377,15 +377,28 @@ When /^I start to copy a C&G Account$/ do
   @account = make AccountObject
   @account.absorb(:original)
   puts @account.inspect
-  @account.absorb(:new)
-  puts @account.inspect
-  pending
   step 'I add the account to the stack'
 end
 
 And /^all default fields are filled in for the new Account$/ do
   # I make a temporary data object by absorbing the 'New' Account information
   # I compare that 'New' d.o. to the 'Old' d.o. (@account)
+  @account = make AccountObject
+  @account.absorb(:new)
+  puts @account.inspect
+  step 'I add the account to the stack'
+
+  puts (@accounts[0] == @accounts[1]).inspect
+
+  puts @accounts[0].class.attributes
+         .delete_if{ |a| @accounts[0].instance_variable_get("@#{a}").nil? }
+         .collect{ |a| {
+                   attr: "@#{a}",
+                   a: @accounts[0].instance_variable_get("@#{a}"),
+                   b: @accounts[1].instance_variable_get("@#{a}"),
+                   c: @accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}")
+                 } }
+  # TODO: Figure out which fields are set by default (parameter?)
   pending
 end
 
