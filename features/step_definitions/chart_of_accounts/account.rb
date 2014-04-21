@@ -390,14 +390,14 @@ And /^all default fields are filled in for the new Account$/ do
 
   puts (@accounts[0] == @accounts[1]).inspect
 
-  puts @accounts[0].class.attributes
+  @accounts[0].class.attributes
          .delete_if{ |a| @accounts[0].instance_variable_get("@#{a}").nil? }
          .collect{ |a| {
                    attr: "@#{a}",
                    a: @accounts[0].instance_variable_get("@#{a}"),
                    b: @accounts[1].instance_variable_get("@#{a}"),
                    c: @accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}")
-                 } }
+                 } }.each{|r| puts r.inspect}
   # TODO: Figure out which fields are set by default (parameter?)
   pending
 end

@@ -21,7 +21,7 @@ Then /^I switch to the user with the next Pending Action in the Route Log for th
     page.use_new_tab
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].should exist
     page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text.empty?.should_not
-    if (page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:'))
+    if page.frm.div(id: 'tab-Overview-div').tables[0][1].text.include?('Principal Name:')
        new_user = page.frm.div(id: 'tab-Overview-div').tables[0][1].tds[0].text
     else
       # TODO : this is for group.  any other alternative ?
@@ -51,5 +51,15 @@ And /^the next pending action for the (.*) document is an? (.*) from a (.*)$/ do
     page.pnd_act_req_table_action.visible?.should
     page.pnd_act_req_table_action.should match(/#{action}/)
     page.pnd_act_req_table_annotation.should match(/#{user_type}/)
+  end
+end
+
+And /^the (.*) document routes successfully through this route:$/ do |document, route|
+  # route is a route.hashes.keys # => [:Role, :Action]
+  route.hashes.each do |route_step|
+    step "the next pending action for the #{document} document is a #{route_step[:Action]} from a #{route_step[:Role]}"
+    step "I switch to the user with the next Pending Action in the Route Log for the #{document} document"
+    step "I approve the #{document} document"
+    step 'The document should have no errors'
   end
 end

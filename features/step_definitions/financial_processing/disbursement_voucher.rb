@@ -86,7 +86,7 @@ And /^I copy a Disbursement Voucher document with Tax Address to persist$/ do
     old_address = [tab.address_1_value, tab.address_2_value.strip, tab.city_value, tab.state_value, tab.country_value, tab.postal_code_value]
   }
 
-  get("disbursement_voucher").send("copy_current_document")
+  on(DisbursementVoucherPage).copy_current_document
 
   # validate the Tax Address is copied over
   copied_address = []
