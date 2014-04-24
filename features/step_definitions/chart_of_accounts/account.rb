@@ -358,6 +358,11 @@ And /^I fill in the missing required fields for the new Account$/ do
   @account.fill_out_required_attributes
 end
 
+And /^I fill in the missing optional fields for the new Account$/ do
+  # We expect to already be on a Account document create/copy/edit page
+  @account.fill_out_optional_attributes
+end
+
 And /^I fill in the missing Cornell-specific fields for the new Account$/ do
   # We expect to already be on a Account document create/copy/edit page
   @account.fill_out_extended_attributes(:required)

@@ -15,10 +15,11 @@ Feature: KFS Fiscal Officer Account Copy
     And   I copy an Account
     Then  the Account Maintenance Document saves with no errors
 
-  @KFSQA-838 @smoke @wip
+  @KFSQA-838 @smoke @CG @Copy @Routing @wip
   Scenario: Copy C&G Account (Smoke Test)
     Given I am logged in as a KFS User
     When  I start to copy a C&G Account
+    When  I fill in the missing optional fields for the new Account
     Then  all default fields are filled in for the new Account
     When  I fill in the missing required fields for the new Account
     And   I fill in the missing Cornell-specific fields for the new Account
@@ -30,20 +31,4 @@ Feature: KFS Fiscal Officer Account Copy
       | KFS-SYS C&G Processor      | APPROVE |
       | KFS-SYS Sub Fund Reviewer  | APPROVE |
       | KFS-SYS Account Supervisor | APPROVE |
-#    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Fiscal Officer
-#    When  I switch to the user with the next Pending Action in the Route Log for the Account document
-#    And   I approve the Account document
-#    Then  The document should have no errors
-#    And   the next pending action for the Account document is an APPROVE from a KFS-SYS C&G Processor
-#    When  I switch to the user with the next Pending Action in the Route Log for the Account document
-#    And   I approve the Account document
-#    Then  The document should have no errors
-#    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Sub Fund Reviewer
-#    When  I switch to the user with the next Pending Action in the Route Log for the Account document
-#    And   I approve the Account document
-#    Then  The document should have no errors
-#    And   the next pending action for the Account document is an APPROVE from a KFS-SYS Account Supervisor
-#    When  I switch to the user with the next Pending Action in the Route Log for the Account document
-#    And   I approve the Account document
-#    Then  The document should have no errors
     And   the Account document goes to FINAL
