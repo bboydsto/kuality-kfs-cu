@@ -4,41 +4,24 @@ Feature: Notes And Attachments Tab
               fields in the Notes and Attachment Tab of all FP Docs.
 
   @KFSQA-644 @wip
-  Scenario Outline: Sequential tab flow of Notes and Attachment Tab
-    Given I am logged in as a KFS User for the <docType> document
-    When  I start an empty <eDoc> document
-    And   I enter text into the Note Text field of the <eDoc> document
-    And   I press the Tab key
+  Scenario: Sequential tab flow of Notes and Attachment Tab
+    Given I am logged in as a KFS User for the BA document
+    When  I start an empty Budget Adjustment document
+    And   I collapse all tabs
+    And   I expand the Notes and Attachments tab
+    And   I note how many attachments the Budget Adjustment document has already
+    And   I enter text into the Note Text field of the Budget Adjustment document
+    And   I press the tab key
     Then  my cursor is on the Attach File field
-    When  I attach a file to the Notes and Attachments Tab line of the <eDoc> document
+    When  I add a file attachment to the Notes and Attachment Tab of the Budget Adjustment document
+    And   I press the tab key
     Then  my cursor is on the Cancel Attachment button
-    When  I press the Tab key
+    When  I press the tab key
     Then  my cursor is on the Add a Note button
-    When  I click the Add a Note button
-    And   I save the <eDoc> document
-    And   I enter a a Valid Notification Recipient for the <eDoc> document
-    And   I press the Tab key
-    Then  my cursor is on the Delete a Note button
-    When  I press the Tab key
+    When  I add the Notes and Attachment line to the Budget Adjustment document
+    Then  the Budget Adjustment document's Notes and Attachments Tab displays the added attachment
+    When  I enter a Valid Notification Recipient for the Budget Adjustment document
+    And   I press the tab key
     Then  my cursor is on the Send FYI button
-    When  I click the Send FYI button
-    And   I stop here
-    Then  I will see a display of "Note notification was successfully sent."
-  Examples:
-      | eDoc                               | docType |
-      | Advance Deposit                    | AD      |
-#      | Auxiliary Voucher                  | AV      |
-#      | Credit Card Receipt                | CCR     |
-#      | Distribution Of Income And Expense | DI      |
-#      | General Error Correction           | GEC     |
-#      | Internal Billing                   | IB      |
-#      | Journal Voucher                    | JV-1    |
-#      | Journal Voucher                    | JV-2    |
-#      | Journal Voucher                    | JV-3    |
-#      | Non-Check Disbursement             | ND      |
-#      | Pre-Encumbrance                    | PE      |
-#      | Transfer Of Funds                  | TF      |
-#      | Budget Adjustment                  | BA      |
-#      | Service Billing                    | SB      |
-#      | Disbursement Voucher               | DV      |
-#      | Indirect Cost Adjustment           | ICA     |
+    Then  my cursor is on the Add a Note button
+    # Last one should fail
