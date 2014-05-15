@@ -7,7 +7,7 @@ end
 
 And /^I enter text into the Note Text field of the (.*) document$/ do |document|
   new_text = 'Testing note text.'
-  on(KFSBasePage).note_text.fit new_text
+  on(document_object_for(document)).note_text.fit new_text
   #document_object_for(document).notes_and_attachments_tab.add note_text: new_text, immediate_add: false
 end
 
@@ -16,12 +16,12 @@ And /^I add a file attachment to the Notes and Attachment Tab of the (.*) docume
   #                              .add file:          'vendor_attachment_test.png',
   #                                   immediate_add: false
   filename = 'vendor_attachment_test.png'
-  on(KFSBasePage).attach_notes_file.set($file_folder+filename)
-  on(KFSBasePage).attach_notes_file.value.should == filename
+  on(document_object_for(document)).attach_notes_file.set($file_folder+filename)
+  on(document_object_for(document)).attach_notes_file.value.should == filename
 end
 
 And /^I add note '(.*)' to the (.*) document$/ do |note_text, document|
-  on(KFSBasePage).note_text.fit note_text
+  on(document_object_for(document)).note_text.fit note_text
   document_object_for(document).notes_and_attachments_tab.add note_text: note_text, immediate_add: true
 end
 
