@@ -7,21 +7,30 @@ end
 
 And /^I enter text into the Note Text field of the (.*) document$/ do |document|
   new_text = 'Testing note text.'
-  on(document_object_for(document)).note_text.fit new_text
+  on(page_class_for(document)).note_text.fit new_text
   #document_object_for(document).notes_and_attachments_tab.add note_text: new_text, immediate_add: false
 end
 
-And /^I add a file attachment to the Notes and Attachment Tab of the (.*) document$/ do |document|
-  # document_object_for(document).notes_and_attachments_tab
-  #                              .add file:          'vendor_attachment_test.png',
-  #                                   immediate_add: false
+And /^I manually add a file attachment to the Notes and Attachment Tab of the (.*) document$/ do |document|
   filename = 'vendor_attachment_test.png'
-  on(document_object_for(document)).attach_notes_file.set($file_folder+filename)
-  on(document_object_for(document)).attach_notes_file.value.should == filename
+  on(page_class_for(document)).attach_notes_file.set($file_folder+filename)
+  on(page_class_for(document)).attach_notes_file.value.should == filename
+  pending
+  @browser.send_keys :tab
+  on(page_class_for(document)).attach_notes_file.value.should == filename
+  pending
+end
+
+And /^I add a file attachment to the Notes and Attachment Tab of the (.*) document$/ do |document|
+  filename = 'vendor_attachment_test.png'
+  document_object_for(document).notes_and_attachments_tab
+                               .add file:          'vendor_attachment_test.png',
+                                    immediate_add: false
+  on(page_class_for(document)).attach_notes_file.value.should == filename
 end
 
 And /^I add note '(.*)' to the (.*) document$/ do |note_text, document|
-  on(document_object_for(document)).note_text.fit note_text
+  on(page_class_for(document)).note_text.fit note_text
   document_object_for(document).notes_and_attachments_tab.add note_text: note_text, immediate_add: true
 end
 
@@ -37,7 +46,7 @@ When /^I enter a Valid Notification Recipient for the (.*) document$/ do |docume
       # For now, we'll map them all to the same thing
     else
       recipient = 'ccs1'
-      on(KFSBasePage).notification_recipient.fit recipient
+      on(page_class_for(document)).notification_recipient.fit recipient
       document_object_for(document).notes_and_attachments_tab
                                    .first
                                    .notification_recipient = recipient

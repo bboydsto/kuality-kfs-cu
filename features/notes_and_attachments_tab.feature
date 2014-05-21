@@ -13,7 +13,7 @@ Feature: Notes And Attachments Tab
     And   I enter text into the Note Text field of the Budget Adjustment document
     And   I press the tab key
     Then  my cursor is on the Attach File field
-    When  I add a file attachment to the Notes and Attachment Tab of the Budget Adjustment document
+    When  I manually add a file attachment to the Notes and Attachment Tab of the Budget Adjustment document
     And   I press the tab key
     Then  my cursor is on the Cancel Attachment button
     When  I press the tab key
