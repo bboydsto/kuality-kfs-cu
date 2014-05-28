@@ -2,7 +2,7 @@ Feature: PURAP e-SHOP Create
 
   [KFSQA-732] PURAP E2E REQS - Create -- e-SHOP (PURAP E2E-001b) - e-SHOP is shopper
 
-  @KFSQA-732 @purap @cornell
+  @KFSQA-732 @purap @cornell @wip
   Scenario: PURAP E2E e-SHOP shopper test
     Given I login as an e-SHOP Buyer
     And   I visit the "e-SHOP" page
@@ -54,4 +54,4 @@ Feature: PURAP e-SHOP Create
     Given Nightly Batch Jobs run
     Then  the Purchase Order document has matching GL and GLPE offsets
     Given I run Auto Close Purchase Orders
-    Then  the job completes successfully
+    Then  the last Nightly Batch Job should have succeeded

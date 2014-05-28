@@ -161,7 +161,3 @@ end
 And /^I run Auto Close Purchase Orders$/ do
   run_auto_close_purchase_orders(true)
 end
-
-Then /^the job completes successfully$/ do
-  on(SchedulePage).job_status.should match(/Succeeded/)
-end
