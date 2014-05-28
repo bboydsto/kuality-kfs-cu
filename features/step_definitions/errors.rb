@@ -8,7 +8,7 @@ Then /^an error should say (.*)$/ do |error|
   $current_page.errors.should include errors[error]
 end
 
-Then /^The document should have no errors$/ do
+Then /^the document should have no errors$/ do
   $current_page.errors.should == []
 end
 
@@ -30,7 +30,7 @@ Then /^I should get an error that starts with "([^"]*)"$/ do |error_msg|
 end
 
 And /^I should get an Authorization Exception Report error$/ do
-  @browser.frm.div(id: 'headerarea').h1.text.rstrip.should == 'Authorization Exception Report'
+  $current_page.frm.div(id: 'headerarea').h1.text.rstrip.should == 'Authorization Exception Report'
 end
 
 Then /^an empty error should appear$/ do

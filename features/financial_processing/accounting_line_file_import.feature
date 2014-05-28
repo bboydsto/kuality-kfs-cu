@@ -11,11 +11,13 @@ Feature: import csv for accounting lines on multiple documents
     And     on the <document> I import the From Accounting Lines from a csv file
     And     I submit the <document> document
     And     I am logged in as "dh273"
+    #TODO get from role service? chart manager
     When    I view the <document> document
     When    I blanket approve the <document> document
     And     Nightly Batch Jobs run
     And     I am logged in as a KFS User for the <type code> document
     And     I am logged in as "dh273"
+    #TODO TODD FIX? and maybe get from role service? chart manager
     When    I view the <document> document on the General Ledger Entry
     Then    the Template Accounting Line Description for <document> equals the General Ledger entry
   Examples:
@@ -25,7 +27,7 @@ Feature: import csv for accounting lines on multiple documents
     | Journal Voucher        | JV-1    | JV-1_offset_bal_type_import.csv  |
 
   @KFSQA-643 @cornell @nightly-jobs
-  Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approve
+  Scenario Outline: Checking General Ledger for Accounting Line Description using Import Template without blanket approval
     Given   I am logged in as a KFS User for the <type code> document
     And     I start a <document> document for "<file name>" file import
     And     on the <document> I import the From Accounting Lines from a csv file
@@ -47,6 +49,7 @@ Feature: import csv for accounting lines on multiple documents
     And     on the <document> I import the To Accounting Lines from a csv file
     And     I submit the <document> document
     And     I am logged in as "dh273"
+    #TODO get from role service? chart manager
     When    I view the <document> document
     When    I blanket approve the <document> document
     And     Nightly Batch Jobs run
