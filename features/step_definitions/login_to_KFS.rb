@@ -190,3 +190,7 @@ end
 Given /^I login as an e-SHOP assignee$/ do
   visit(BackdoorLoginPage).login_as('spp7') #TODO get from role service
 end
+
+And /^I logout of KFS and log back in$/ do
+  pending # express the regexp above with the code you wish you had
+end

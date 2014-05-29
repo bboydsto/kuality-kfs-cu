@@ -92,7 +92,7 @@ And /^I extract the Requisition document to SciQuest$/ do
 
   steps %Q{
     Given I am logged in as "db18"
-    When  I visit the "e-SHOP" page
+    When  I visit the e-SHOP
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
     And   the Delivery Instructions displayed equals what came from the PO

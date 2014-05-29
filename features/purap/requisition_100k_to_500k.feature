@@ -58,7 +58,7 @@ Feature: Purap Preq Building Blocks
     Then in Pending Action Requests an FYI is sent to FO and Initiator
     And the Purchase Order Doc Status is Open
     Given I am logged in as "db18"
-    And   I visit the "e-SHOP" page
+    And   I visit the e-SHOP
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
     And   the Delivery Instructions displayed equals what came from the PO
@@ -183,7 +183,7 @@ Feature: Purap Preq Building Blocks
     Then in Pending Action Requests an FYI is sent to FO and Initiator
     And the Purchase Order Doc Status is Open
     Given I am logged in as "db18"
-    And   I visit the "e-SHOP" page
+    And   I visit the e-SHOP
     And   I view the Purchase Order document via e-SHOP
     Then  the Document Status displayed 'Completed'
     And   the Delivery Instructions displayed equals what came from the PO

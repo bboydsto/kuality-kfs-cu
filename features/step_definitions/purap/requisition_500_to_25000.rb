@@ -407,12 +407,6 @@ And /^I enter Delivery Instructions and Notes to Vendor$/ do
   end
 end
 
-When /^I visit the "(.*)" page$/  do   |go_to_page|
-  go_to_pages = go_to_page.downcase.gsub!(' ', '_')
-  go_to_pages = go_to_page.downcase.gsub!('-', '_')
-  on(MainPage).send(go_to_pages)
-end
-
 And /^I enter Payment Information for recurring payment type (.*)$/ do |recurring_payment_type|
   puts 'recur type',recurring_payment_type
   unless recurring_payment_type.empty?

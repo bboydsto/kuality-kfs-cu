@@ -5,9 +5,9 @@ Feature: PURAP e-SHOP Create
   @KFSQA-732 @E2E @REQS @Routing @eShop @cornell @wip
   Scenario: PURAP E2E e-SHOP shopper test
     Given I login as an e-SHOP Buyer
-    And   I visit the "e-SHOP" page
+    And   I visit the e-SHOP
     And   I select a e-SHOP Hosted Supplier
-    When  I search for an item with the following qualifications:
+    When  I search for an e-SHOP item with the following qualifications:
       | Minimum Price            | 1500  |
       | Maximum Price            | 10000 |
       | Is a Sensitive Commodity | true  |
@@ -49,7 +49,7 @@ Feature: PURAP e-SHOP Create
     And   the Attachments for Supplier match what came from the Purchase Order
 
     # KFS Batch Processing for PO
-    Given I am logged in as a KFS System Administrator
+    Given I am logged in as a KFS Operations
     Then  the Object Codes for the Purchase Order document appear in the document's GLPE entry
     Given Nightly Batch Jobs run
     Then  the Purchase Order document has matching GL and GLPE offsets
