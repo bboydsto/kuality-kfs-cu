@@ -2,7 +2,7 @@ Feature: PURAP e-SHOP Create
 
   [KFSQA-732] PURAP E2E REQS - Create -- e-SHOP (PURAP E2E-001b) - e-SHOP is shopper
 
-  @KFSQA-732 @purap @cornell @wip
+  @KFSQA-732 @E2E @REQS @Routing @eShop @cornell @wip
   Scenario: PURAP E2E e-SHOP shopper test
     Given I login as an e-SHOP Buyer
     And   I visit the "e-SHOP" page
