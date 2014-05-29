@@ -45,6 +45,10 @@ Feature: Disbursement Voucher
 
   [KFSQA-705] Payee should not be able to approve (as Fiscal Officer) a payment to themselves.
 
+  [KFSQA-976] Cathy's Comprensive DV test includes audit saves. This test includes various tests,
+              created by Cathy Salino, that should in and of itself, cover most of the critical
+              DV functionality.
+
   @KFSQA-681 @smoke @sloth
   Scenario: KFS User Initiates and Submits a Disbursement Voucher document with Payment to Retiree
     Given I am logged in as a KFS User
@@ -536,3 +540,60 @@ Feature: Disbursement Voucher
     And   I view the Disbursement Voucher document
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
+
+  @KFSQA-976 @CucumberReports @DV @smoke
+  Scenario: Cathy's Comprensive DV test includes audit saves
+    Given: I am logged in as "user", role 54 (or FTC/BSC role 100000157 )
+    And   create a DV
+    And   enter description "Cucumber smoke testing"
+    And   search for payee
+    And   select Payment Reason B
+    And   Select a foreign vendor (vendor file, foreign vendor = Yes)
+    And   select a dollar amount: $100,000
+    And   select foreign draft as method of payment
+    Then  receive message that "Payment method of Foreign Draft requires the Foreign Draft Tab to be completed."
+    And   complete check stub info
+    And   Enter / add accounting lines: Accounting lines: account 5193120, object 6100, amount $65,000 and account 5193125, object code 6100, and amount $35,000.00
+    And   submit the DV
+    Then  Receive errors: "You must select one of the choices to describe the currency amount you have entered." and"Currency type must be filled in."
+    And   complete foreign draft tab
+    And   select "dv amount is stated in foreign currency"
+    And   enter currency type "Canadian"
+    And   submit the DV
+
+    When  logged in as FO on account in document
+    And   FO on account(s) above edits document - change account to another FO's account
+    And   saves doc
+    And   note is added to document (audit trail)
+    And   approves doc
+    Then  error(s) received "Existing accounting lines may not be updated to use Chart Code XX by user XXXX" and/or "Existing accounting lines may not be updated to use Account Number XXXXXXX by user XXXX.
+    And   doc is "reloaded"
+    And   account number is changed to A CG account of the FO's accounts
+    And   doc is saved
+    And   note is added to document (audit trail)
+    And   FO tries to change amount of DV
+    And   FO approves doc; but should fail with error "Total of accounting lines must match Check Amount."
+    Then  FO reloads and approves doc
+    When  logged in as tax manager, role 50
+    And   opens non-resident alien tab
+    And   selects honoraria/prize
+    And   enters "30" in federal box
+    And   enters 0 (zero) in state box
+    And   enters Canada in country box
+    And   changes dollar amounts ($50k each)
+    And   clicks save
+    And   note is added to document (audit trail)
+    And   clicks to generate lines CURRENTLY AN ERROR: State tax rate should be greater than zero if federal tax rate is greater than zero.
+    And   approves
+    And   logs in as disbursement manager, role 12
+    And   change object code on line one (6430) *must be allowable for that payment reason
+    And   saves
+    And   note is added to document (audit trail)
+    And   approves
+    And   logs in as disbursement method reviewer, role 70
+    And   changes check amount
+    And   changes amount on accounting lines to equal check amount
+    And   saves
+    And   note is added to document (audit trail)
+    And   approves doc
+    Then  financial transaction should become final
