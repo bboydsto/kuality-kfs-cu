@@ -31,7 +31,7 @@ class VendorPage
   alias_method :new_health_offsite_catering_lic_req, :health_offsite_catering_lic_req
   element(:insurance_requirement_indicator) { |b| b.frm.checkbox(name: 'document.newMaintainableObject.extension.insuranceRequiredIndicator') }
   alias_method :new_insurance_requirement_indicator, :insurance_requirement_indicator
-  element(:default_payment_method) { |b| b.frm.text_field(name: 'document.newMaintainableObject.extension.defaultB2BPaymentMethodCode') }
+  element(:default_payment_method) { |b| b.frm.select(id: 'document.newMaintainableObject.extension.defaultB2BPaymentMethodCode') }
   alias_method :new_default_payment_method, :default_payment_method
 
   element(:old_w9_received_date) { |b| b.frm.span(id: 'document.oldMaintainableObject.vendorHeader.extension.vendorW9ReceivedDate.div').text.strip }
@@ -62,6 +62,7 @@ class VendorPage
   alias_method :new_method_of_po_transmission, :method_of_po_transmission
   element(:update_method_of_po_transmission) { |i=0, b| b.addresses_tab.select(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode") }
   value(:old_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.oldMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
+  value(:readonly_method_of_po_transmission) { |i=0, b| b.addresses_tab.span(id: "document.newMaintainableObject.vendorAddresses[#{i}].extension.purchaseOrderTransmissionMethodCode.div").text.strip }
 
   value(:vendor_address_generated_identifier) do |i=0, b|
     b.addresses_tab.span(id: "vendorAddresses[#{i}].extension.vendorAddressGeneratedIdentifier.div")

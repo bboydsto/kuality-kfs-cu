@@ -55,9 +55,16 @@ When /^I enter a Valid Notification Recipient for the (.*) document$/ do |docume
 end
 
 And /^I add an attachment to the (.*) document$/ do |document|
-  document_object_for(document).notes_and_attachments_tab
-                               .add note_text: 'Testing note text.',
-                                    file:      'vendor_attachment_test.png'
+  if on(KFSBasePage).send_to_vendor.exists?
+    document_object_for(document).notes_and_attachments_tab
+                                 .add note_text:      'Testing note text.',
+                                      file:           'vendor_attachment_test.png',
+                                      send_to_vendor: 'Yes'
+  else
+    document_object_for(document).notes_and_attachments_tab
+                                 .add note_text: 'Testing note text.',
+                                      file:      'vendor_attachment_test.png'
+  end
 end
 
 And /^I note how many attachments the (.*) document has already$/ do |document|
@@ -75,6 +82,10 @@ And /^the (.*) document's Notes and Attachments Tab displays the added attachmen
     note_matches = page.submitted_note_text(i).match(last_attachment.note_text) unless (last_attachment.note_text.nil? || last_attachment.note_text.empty?)
     (!file_matches.nil? && !note_matches.nil?).true?.should
   end
+end
+
+And /^the (.*) document's Notes and Attachments Tab has (\d+) more attachments? than before$/ do |document, count|
+  on(page_class_for(document)).notes_and_attachments_count.should == @attachments_count + count.to_i
 end
 
 And /^the (.*) document's Notes Tab displays the added attachment$/ do |document|
