@@ -532,3 +532,23 @@ And /^the General Ledger Pending entries match the accounting lines on the (.*) 
     (page.glpe_results_table.rows.length-1).should == (num_encum_source_d + num_encum_source_c + num_disencum_target_d + num_disencum_target_c)
   end
 end
+
+And /^I update these Accounting Lines on the (.*) document:$/ do |table, document|
+  # table is a table.hashes.keys # => [:Type, :Line, :Account Number]
+
+  data_keys = 2..(table.hashes.keys.length-1) # Skip the first two columns, which are used for targeting
+  i = 0
+  table.rows.each do |r|
+    update_vals = r[data_keys] # Separate out all our new values.
+    update = Hash[table.hashes.keys[data_keys].each{ |k| snake_case(k.to_s) }.zip(update_vals)]
+    # This means our keys must be snake_case-able to the accounting line attributes.
+    # i.e.
+    # 'Account Number' => :account_number  # Good!
+    # 'Object Code'    => :object_code     # Bad! Should be 'Object' (or 'object', if you will)
+
+    document_object_for(document).accounting_lines[snake_case(table.hashes[:Type][i])][table.hashes[:Line][i]].edit update
+    i += 1
+  end
+
+  pending 'Need to verify that we\'re actually pulling the fancy FO account lookup thingy correctly.'
+end

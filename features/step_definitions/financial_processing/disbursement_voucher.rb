@@ -399,8 +399,27 @@ Then /^the Payee Name should match$/ do
   on(PaymentInformationTab).payee_name.should == payee_name
 end
 
-When /^I add the following values to the Disbursement Voucher document:$/ do |updates|
-  # updates is a updates.hashes.keys # => [:Documentation Location Code, :O - Fin Tran Center/BSC]
+When /^I add the following values to the Disbursement Voucher document:$/ do |table|
+  updates = {
+      documentation_location_code: table.rows_hash['Documentation Location Code'],
+      check_stub_text:             table.rows_hash['Check Stub Text']
+  }.delete_if{ |k,v| v.nil? }
+  # There are certainly many more attributes that will need to be mapped.
 
-  pending
+  @disbursement_voucher.edit updates
+end
+
+When /^I update the Non\-Resident Alien tab on the Disbursement Voucher with the following values:$/ do |table|
+  # table is a updates.hashes.keys # => [:Income Class Code, :Honoraria/Prize]
+
+  updates = {
+    nra_income_class_code:      table.rows_hash['Income Class Code'],
+    nra_federal_income_tax_pct: table.rows_hash['Federal Tax Percent'],
+    nra_state_income_tax_pct:   table.rows_hash['State Tax Percent'],
+    nra_country_code:           table.rows_hash['Country Code']
+  }.delete_if{ |k,v| v.nil? }
+
+  @disbursement_voucher.edit updates
+
+  pending 'Need to figure out what\'s going on with the dollar amounts...'
 end

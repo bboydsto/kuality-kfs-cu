@@ -269,7 +269,7 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-716 @DV @cornell @tortoise @wip
+  @KFSQA-716 @DV @cornell @tortoise
   Scenario: DV payee can not be the same as initiator.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
@@ -530,7 +530,7 @@ Feature: Disbursement Voucher
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-976 @CucumberReports @DV @smoke @wip1
+  @KFSQA-976 @CucumberReports @DV @smoke @wip
   Scenario: Cathy's Comprensive DV test includes audit saves
     Given I am logged in as FTC/BSC member User
     When  I start an empty Disbursement Voucher document with only the Description field populated
@@ -538,8 +538,8 @@ Feature: Disbursement Voucher
     And   I change the Check Amount on the Payment Information tab to 100000
     And   I complete the Foreign Draft Tab
     When  I add the following values to the Disbursement Voucher document:
-      | Documentation Location Code | O - Fin Tran Center/BSC   |
-      | Check Stub Text             | Dollah dollah bills, yall |
+      | Documentation Location Code | O - Fin Tran Center/BSC    |
+      | Check Stub Text             | Dollah dollah bills, y'all |
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | 5193120            |
       | Object Code  | 6100               |
@@ -551,41 +551,91 @@ Feature: Disbursement Voucher
       | Amount       | 35000              |
       | Description  | Line Test Number 2 |
     And   I submit the Disbursement Voucher document
+    Then  the Disbursement Voucher document goes to ENROUTE
 
-    When  logged in as FO on account in document
-    And   FO on account(s) above edits document - change account to another FO's account
-    And   saves doc
-    And   note is added to document (audit trail)
-    And   approves doc
-    Then  error(s) received "Existing accounting lines may not be updated to use Chart Code XX by user XXXX" and/or "Existing accounting lines may not be updated to use Account Number XXXXXXX by user XXXX.
-    And   doc is "reloaded"
-    And   account number is changed to A CG account of the FO's accounts
-    And   doc is saved
-    And   note is added to document (audit trail)
-    And   FO tries to change amount of DV
-    And   FO approves doc; but should fail with error "Total of accounting lines must match Check Amount."
-    Then  FO reloads and approves doc
-    When  logged in as tax manager, role 50
-    And   opens non-resident alien tab
-    And   selects honoraria/prize
-    And   enters "30" in federal box
-    And   enters 0 (zero) in state box
-    And   enters Canada in country box
-    And   changes dollar amounts ($50k each)
-    And   clicks save
-    And   note is added to document (audit trail)
-    And   clicks to generate lines CURRENTLY AN ERROR: State tax rate should be greater than zero if federal tax rate is greater than zero.
-    And   approves
-    And   logs in as disbursement manager, role 12
-    And   change object code on line one (6430) *must be allowable for that payment reason
-    And   saves
-    And   note is added to document (audit trail)
-    And   approves
-    And   logs in as disbursement method reviewer, role 70
-    And   changes check amount
-    And   changes amount on accounting lines to equal check amount
-    And   saves
-    And   note is added to document (audit trail)
-    And   approves doc
-    Then  financial transaction should become final
+    Given I am logged in as a KFS Fiscal Officer for account number 5193120
+    # When  logged in as FO on account in document
+    When  I view the Disbursement Voucher document
+    And   I update these Accounting Lines on the Disbursement Voucher document:
+      | Type   | Line | Account Number                                     |
+      | Source | 1    | Account Number of another Fiscal Officer's account |
+    #And   FO on account(s) above edits document - change account to another FO's account
+    And    I note how many attachments the Disbursement Voucher document has already
+    And    I save the Disbursement Voucher document
+    Then   the document should have no errors
+    And    the Disbursement Voucher document's Notes and Attachments Tab has 1 more attachment than before
+    #And   note is added to document (audit trail)
+
+    When   I approve the Disbursement Voucher document
+    Then   I should get these error messages:
+      | Existing accounting lines may not be updated to use Chart Code XX by user XXXX           |
+      | Existing accounting lines may not be updated to use Account Number XXXXXXX by user XXXX. |
+
+    When   I reload the Disbursement Voucher document
+    And    I update these Accounting Lines on the Disbursement Voucher document:
+      | Type   | Line | Account Number                              |
+      | Source | 1    | a CG account of other FO's accounts         |
+    #And   account number is changed to A CG account of the FO's accounts
+    And    I note how many attachments the Disbursement Voucher document has already
+    And    I save the Disbursement Voucher document
+    Then   the document should have no errors
+    And    the Disbursement Voucher document's Notes and Attachments Tab has 1 more attachment than before
+    #And   note is added to document (audit trail)
+
+    When   I change the Check Amount for the Disbursement Voucher document to 9000
+    And    I approve the Disbursement Voucher document
+    Then   I should get an error saying "Total of accounting lines must match Check Amount."
+
+    When   I reload the Disbursement Voucher document
+    And    I approve the Disbursement Voucher document
+    Then   the document should have no errors
+
+    Given I am logged in as a Tax Manager
+    When  I update the Non-Resident Alien tab on the Disbursement Voucher with the following values:
+      | Income Class Code   | Honoraria/Prize |
+      | Federal Tax Percent | 30              |
+      | State Tax Percent   | 0               |
+      | Country Code        | Canada          |
+      | Dollar Amount 1     | $50k            |
+      | Dollar Amount 2     | $50k            |
+    And    I note how many attachments the Disbursement Voucher document has already
+    And    I save the Disbursement Voucher document
+    Then   the document should have no errors
+    And    the Disbursement Voucher document's Notes and Attachments Tab has 1 more attachment than before
+    #And   note is added to document (audit trail)
+
+    When   I stop here because I don't know what the commented out line means
+    #And   clicks to generate lines CURRENTLY AN ERROR: State tax rate should be greater than zero if federal tax rate is greater than zero.
+    And    I approve the Disbursement Voucher document
+    Then   the document should have no errors
+
+    Given  I am logged in as a Disbursement Manager
+    When   I view the Disbursement Voucher document
+    And    I update these Accounting Lines on the Disbursement Voucher document:
+      | Type   | Line | Object |
+      | Source | 1    | 6430   |
+    And    I note how many attachments the Disbursement Voucher document has already
+    And    I save the Disbursement Voucher document
+    Then   the document should have no errors
+    And    the Disbursement Voucher document's Notes and Attachments Tab has 1 more attachment than before
+    #And   note is added to document (audit trail)
+
+    When   I approve the Disbursement Voucher document
+    Then   the document should have no errors
+
+    Given  I am logged in as a Disbursement Method Reviewer
+    When   I change the Check Amount for the Disbursement Voucher document to 9000
+    And    I update these Accounting Lines on the Disbursement Voucher document:
+      | Type   | Line | Amount |
+      | Source | 1    | 4500   |
+      | Source | 2    | 4500   |
+    And    I note how many attachments the Disbursement Voucher document has already
+    And    I save the Disbursement Voucher document
+    Then   the document should have no errors
+    And    the Disbursement Voucher document's Notes and Attachments Tab has 1 more attachment than before
+    #And   note is added to document (audit trail)
+
+    When   I approve the Disbursement Voucher document
+    Then   the document should have no errors
+    And    the Disbursement Voucher document goes to FINAL
 
