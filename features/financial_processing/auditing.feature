@@ -118,7 +118,7 @@ Feature: FP Auditing
       | Number       | <target_account> |
       | Amount       | <target_amount>  |
     And   I submit the <document> document
-    And    the <document> document goes to ENROUTE
+    And   the <document> document goes to ENROUTE
     And   I am logged in as a Source Account Fiscal Officer
     And   I view the <document> document
     And   I change the Account Organization Reference for Accounting Line 1 to QA747 on the <document>

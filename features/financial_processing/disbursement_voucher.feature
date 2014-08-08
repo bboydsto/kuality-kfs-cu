@@ -269,7 +269,7 @@ Feature: Disbursement Voucher
     And   I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-716 @DV @cornell @tortoise
+  @KFSQA-716 @DV @cornell @tortoise @wip
   Scenario: DV payee can not be the same as initiator.
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
@@ -439,7 +439,6 @@ Feature: Disbursement Voucher
     Given I am logged in as a KFS User for the DV document
     And   I start an empty Disbursement Voucher document
     And   I search and retrieve DV foreign vendor 5328-1 with Reason Code B
-    And   I select the added Remit Address
     And   I complete the Foreign Draft Tab
     And   I add an Accounting Line to the Disbursement Voucher with the following fields:
       | Number       | G003704            |
@@ -531,25 +530,27 @@ Feature: Disbursement Voucher
     When  I approve the Disbursement Voucher document
     Then  the Disbursement Voucher document goes to ENROUTE
 
-  @KFSQA-976 @CucumberReports @DV @smoke
+  @KFSQA-976 @CucumberReports @DV @smoke @wip1
   Scenario: Cathy's Comprensive DV test includes audit saves
-    Given: I am logged in as "user", role 54 (or FTC/BSC role 100000157 )
-    And   create a DV
-    And   enter description "Cucumber smoke testing"
-    And   search for payee
-    And   select Payment Reason B
-    And   Select a foreign vendor (vendor file, foreign vendor = Yes)
-    And   select a dollar amount: $100,000
-    And   select foreign draft as method of payment
-    Then  receive message that "Payment method of Foreign Draft requires the Foreign Draft Tab to be completed."
-    And   complete check stub info
-    And   Enter / add accounting lines: Accounting lines: account 5193120, object 6100, amount $65,000 and account 5193125, object code 6100, and amount $35,000.00
-    And   submit the DV
-    Then  Receive errors: "You must select one of the choices to describe the currency amount you have entered." and"Currency type must be filled in."
-    And   complete foreign draft tab
-    And   select "dv amount is stated in foreign currency"
-    And   enter currency type "Canadian"
-    And   submit the DV
+    Given I am logged in as FTC/BSC member User
+    When  I start an empty Disbursement Voucher document with only the Description field populated
+    And   I add a DV foreign vendor 5328-1 with Reason Code B
+    And   I change the Check Amount on the Payment Information tab to 100000
+    And   I complete the Foreign Draft Tab
+    When  I add the following values to the Disbursement Voucher document:
+      | Documentation Location Code | O - Fin Tran Center/BSC   |
+      | Check Stub Text             | Dollah dollah bills, yall |
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | 5193120            |
+      | Object Code  | 6100               |
+      | Amount       | 65000              |
+      | Description  | Line Test Number 1 |
+    And   I add an Accounting Line to the Disbursement Voucher with the following fields:
+      | Number       | 5193125            |
+      | Object Code  | 6100               |
+      | Amount       | 35000              |
+      | Description  | Line Test Number 2 |
+    And   I submit the Disbursement Voucher document
 
     When  logged in as FO on account in document
     And   FO on account(s) above edits document - change account to another FO's account
