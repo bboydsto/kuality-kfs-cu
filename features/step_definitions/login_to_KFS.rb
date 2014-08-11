@@ -57,55 +57,12 @@ Given /^I am logged in as a KFS System Manager$/ do
 end
 
 Given /^I am logged in as a KFS User for the (.*) document$/ do |eDoc|
-  case eDoc
-    when 'AD'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'AV'
-      visit(BackdoorLoginPage).login_as('scu1') #TODO get from role service
-    when 'BA'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
-    when 'CCR'
-      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
-    when 'DV'
-      visit(BackdoorLoginPage).login_as('rlc56') #TODO get from role service
-    when 'DI'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
-    when 'GEC'
-      visit(BackdoorLoginPage).login_as('sag3') #TODO get from role service
-    when 'IB'
-      visit(BackdoorLoginPage).login_as('djj1') #TODO get from role service
-    when 'ICA'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'JV-1'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'JV-2'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'JV-3'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'LLJV'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'ND'
-      visit(BackdoorLoginPage).login_as('kpg1') #TODO get from role service
-    when 'PE'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    when 'SB'
-      visit(BackdoorLoginPage).login_as('chl52') #TODO get from role service
-    when 'TF'
-      visit(BackdoorLoginPage).login_as('mdw84') #TODO get from role service
-    else
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-  end
+  visit(BackdoorLoginPage).login_as(get_document_initiator(eDoc))
 end
 
 Given /^I am logged in as a KFS Manager for the (.*) document$/ do |eDoc|
-  case eDoc
-    when 'CCR'
-      visit(BackdoorLoginPage).login_as('ccs1') #TODO get from role service
-    when 'SB'
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-    else
-      visit(BackdoorLoginPage).login_as('dh273') #TODO get from role service
-  end
+#  visit(BackdoorLoginPage).login_as(get_document_blanket_approver(eDoc))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Workflow Administrator'))
 end
 
 Given /^I am logged in as a Disbursement Manager$/ do
@@ -117,16 +74,7 @@ Given /^I am logged in as a Tax Manager$/ do
 end
 
 Given /^I am logged in as a Disbursement Method Reviewer$/ do
-  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-FP', 'Disbursement Method Reviewer'))
-end
-
-Given /^I login as a KFS user to create an REQS$/ do
-  visit(BackdoorLoginPage).login_as('der9') #TODO get from role service
-end
-
-Given /^I login as a PURAP eSHop user$/ do
-  # der9
-  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-SYS', 'Disbursement Method Reviewer'))
 end
 
 And /^I am logged in as a PURAP Contract Manager$/ do
@@ -139,7 +87,7 @@ Given /^I am logged in as a Purchasing Processor$/ do
 end
 
 Given /^I am logged in as a Commodity Reviewer$/ do
-  visit(BackdoorLoginPage).login_as('am28') #TODO get from role service
+TONY  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Commodity Reviewer'))
 end
 
 Given /^I am logged in as FTC\/BSC member User$/ do
@@ -169,28 +117,72 @@ end
 
 
 Given /^I Login as a PDP Format Disbursement Processor$/ do
-  visit(BackdoorLoginPage).login_as('mo14') #TODO get from role service
-  #visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-PDP', 'Processor'))
 end
 
-Given /^I Login as a Salary Transfer Initiator$/ do
-  #visit(BackdoorLoginPage).login_as('rae28')
+Given /^I am logged in as a Salary Transfer Initiator$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Salary Transfer Initiator (cu)'))
+end
+
+Given /^I am logged in as a Labor Distribution Manager$/ do
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'Labor Distribution Manager (cu)'))
 end
 
+# This Cucumber step takes the User principal name so the application login can be performed as that user.
+Given  /^I am User (.*) who is a Salary Transfer Initiator$/ do |principal_name|
+  visit(BackdoorLoginPage).login_as(principal_name)
+end
+
 Given /^I Login as a Benefit Transfer Initiator$/ do
-  #visit(BackdoorLoginPage).login_as('rae28') #TODO get from role service
   visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-LD', 'BT Initiator (cu)'))
 end
 
-Given /^I login as an e-SHOP Buyer$/ do
-  visit(BackdoorLoginPage).login_as('blp8') #TODO get from role service
+Given /^I Login as an Asset Processor$/ do
+  visit(BackdoorLoginPage).login_as(get_first_principal_name_for_role('KFS-SYS', 'Asset Processor'))
 end
 
-Given /^I login as an e-SHOP assignee$/ do
-  visit(BackdoorLoginPage).login_as('spp7') #TODO get from role service
+Given /^I am logged in as an e\-SHOP User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop User (cu)'))
 end
 
-And /^I logout of KFS and log back in$/ do
-  pending # express the regexp above with the code you wish you had
+Given /^I am logged in as an e\-SHOP User with a phone number$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_with_phone_name_for_role('KFS-PURAP', 'eShop Plus User(cu)'))
+end
+
+Given /^I am logged in as an e\-SHOP Plus User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop Plus User(cu)'))
+end
+
+Given /^I am logged in as an e\-SHOP Shopper Office User$/ do
+  visit(BackdoorLoginPage).login_as(get_random_principal_name_for_role('KFS-PURAP', 'eShop Shopper Office(cu)'))
+end
+
+Given /^I am logged in as the Initiator of the (.*) document$/ do |document|
+  # this is not to find the document initiator role.  It is the 'initiator' who created the particular document for this scenario
+  step "I am logged in as \"#{document_object_for(document).initiator}\""
+end
+
+Given /^I am logged in as a Vendor Initiator and Manager$/ do
+  # initiator can edit Vendor and Manager can blanket approve vendor
+  managers = get_principal_name_for_role('KFS-SYS', 'Manager')
+  initiators = get_principal_name_for_role('KFS-VND', 'CU Vendor Initiator')
+  users = managers & initiators
+  visit(BackdoorLoginPage).login_as(users[0]) # FIXME: Shouldn't this be users.sample ?
+end
+
+Given /^I am logged in as a (Source|Target|From|To) Account Fiscal Officer$/ do |acct_type|
+  if acct_type == 'Source' || acct_type == 'From'
+    acct_number = on(AccountingLine).result_source_account_number(0)
+  else
+    acct_number = on(AccountingLine).result_target_account_number(0)
+  end
+  step "I am logged in as a KFS Fiscal Officer for account number #{acct_number}"
+end
+
+And /^I am logged in as the adhoc user$/ do
+  step "I am logged in as \"#{@adhoc_user}\""
+end
+
+Given /^I login as a KFS user to create an REQS$/ do
+  visit(BackdoorLoginPage).login_as(get_aft_parameter_value(ParameterConstants::DEFAULT_REQS_INITIATOR))
 end

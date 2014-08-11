@@ -135,8 +135,6 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       expense_guideline_text:     'expense guideline text',
       income_guideline_txt: 'incomde guideline text',
       purpose_text:         'purpose text',
-      income_stream_financial_cost_code: get_aft_parameter_value(ParameterConstants::DEFAULT_INCOME_STREAM_COST_CODE),
-      income_stream_account_number:      get_aft_parameter_value(ParameterConstants::DEFAULT_INCOME_STREAM_ACCOUNT_NUMBER),
       labor_benefit_rate_cat_code:      'CC'#TODO config?
   }
 
@@ -282,6 +280,7 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
       page.indirect_cost_recovery_active_indicator.fit       @account.indirect_cost_recovery_active_indicator unless @account.indirect_cost_recovery_active_indicator.nil?
 
       page.blanket_approve
+      sleep 5
     end
 
     @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
