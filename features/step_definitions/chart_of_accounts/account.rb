@@ -120,6 +120,7 @@ When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_
 end
 
 When /^I save an Account document with only the ([^"]*) field populated$/ do |field|
+  # TODO: Swap this out for Account#defaults
   default_fields = {
       description:          random_alphanums(40, 'AFT'),
       chart_code:           get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
