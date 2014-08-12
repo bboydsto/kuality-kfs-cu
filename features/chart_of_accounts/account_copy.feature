@@ -17,13 +17,15 @@ Feature: KFS Fiscal Officer Account Copy
 
   @KFSQA-838 @cornell @smoke @CG @Copy @Routing @wip
   Scenario: Copy C&G Account (Smoke Test)
-    Given I am logged in as a KFS User - ROLE 54
-    When I open a C&G account (with existing a CFDA #, Indirect Cost Rate EC0, and Account Indirect Cost Recovery Type Code 22)
-    And enter chart
-    And enter Account number
-    And search
-    And select copy
-    And The original fields with values, auto populate in new fields. (Caution: This may vary depending on account used.) Likely the following fields will auto populate: Original section: Account Name, Organization Code, Campus Code, Account Effective Date, Account Expiration Date, Account Postal Code, Account City Name, Account State Code, Account Street Address, Account Type Code, Sub-fund Group code, Account Fringe Benefit checked, Higher Ed Function Code, Account Restricted Status Code, Labor Benefit Rate Category Code. Account Responsibility section: Fiscal Officer Principal name, Account Supervisor Principal Name, Account manager Principal Name, Continuation Chart of Accounts Code, Continuation Account Number, Budget Record Level Code, Account Sufficient Funds Code. Guidelines and Purpose section: Account Expense Guideline Text, Account Income Guideline Text, Account Purpose Text. (nothing for account description section) Contract and Grants Section: Contract Control Chart of Accounts Code, Contract Control Account Number, Account Indirect Cost Recovery Type Code, Indirect Cost Rate, CFDA Number, CG Account Responsibility ID, Invoice Frequency Code, Invoice Type Code, and eVerify indicator is no/off. Indirect Cost Recovery Accounts section: Active indicator checked, Indirect Cost Recovery Chart of Accounts Code, Indirect Cost Recovery Account Number, Account Line Percent, Active indicator checked.
+    Given I am logged in as a KFS User
+    When  I copy a Contracts and Grants Account
+#    When I open a C&G account (with existing a CFDA #, Indirect Cost Rate EC0, and Account Indirect Cost Recovery Type Code 22)
+#    And enter chart
+#    And enter Account number
+#    And search
+#    And select copy
+    Then  the fields from the old Account populate those in the new Account document
+#    And The original fields with values, auto populate in new fields. (Caution: This may vary depending on account used.) Likely the following fields will auto populate: Original section: Account Name, Organization Code, Campus Code, Account Effective Date, Account Expiration Date, Account Postal Code, Account City Name, Account State Code, Account Street Address, Account Type Code, Sub-fund Group code, Account Fringe Benefit checked, Higher Ed Function Code, Account Restricted Status Code, Labor Benefit Rate Category Code. Account Responsibility section: Fiscal Officer Principal name, Account Supervisor Principal Name, Account manager Principal Name, Continuation Chart of Accounts Code, Continuation Account Number, Budget Record Level Code, Account Sufficient Funds Code. Guidelines and Purpose section: Account Expense Guideline Text, Account Income Guideline Text, Account Purpose Text. (nothing for account description section) Contract and Grants Section: Contract Control Chart of Accounts Code, Contract Control Account Number, Account Indirect Cost Recovery Type Code, Indirect Cost Rate, CFDA Number, CG Account Responsibility ID, Invoice Frequency Code, Invoice Type Code, and eVerify indicator is no/off. Indirect Cost Recovery Accounts section: Active indicator checked, Indirect Cost Recovery Chart of Accounts Code, Indirect Cost Recovery Account Number, Account Line Percent, Active indicator checked.
     And Verify new attributes and CFDA# persist: Invoice frequency, Invoice type code, eVerify indicator, Cost Share for Project Number
     And enter description
     And Enter Chart code (original section)
@@ -47,13 +49,25 @@ Feature: KFS Fiscal Officer Account Copy
     And Submit
     And reload
     And Verify new attributes and CFDA# persist: Invoice frequency, Invoice type code, eVerify indicator, Cost Share for Project Number
-    And Verify routing to FO
-    And Verify routing to Organization Reviewer
-    And Verify routing to C&G Processor
-    And Verify routing to Sub-Fund reviewer
-    And Verify FYI to Account Supervisor
-    Then edoc goes to Final
-    And as KFS User - ROLE 54
+    Then the Account document's route log is:
+      | Role                  | Action  |
+      | Fiscal Officer        | APPROVE |
+      | Organization Reviewer | APPROVE |
+      | C&G Processor         | APPROVE |
+      | Sub-Fund Reviewer     | APPROVE |
+#    And Verify routing to FO
+#    And Verify routing to Organization Reviewer
+#    And Verify routing to C&G Processor
+#    And Verify routing to Sub-Fund reviewer
+#    And Verify FYI to Account Supervisor
+
+    When I route the Account document to final
+    Then the Account document goes to FINAL
+
+    Given I am logged in as a KFS User
+    When  I start an empty Distribution Of Income And Expense document
+    And   I add a From accounting line to the Distribution Of Income And Expense document with:
+
     And enter Distribution of Income and Expense
     And enter a description
     And enter an account number, object code 6540 and an amount on the from line
