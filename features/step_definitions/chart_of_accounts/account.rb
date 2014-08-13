@@ -334,21 +334,6 @@ And /^I use these Accounts:$/ do |table|
 
 end
 
-And /^I fill in the missing required fields for the new Account$/ do
-  # We expect to already be on a Account document create/copy/edit page
-  @account.fill_out_required_attributes
-end
-
-And /^I fill in the missing optional fields for the new Account$/ do
-  # We expect to already be on a Account document create/copy/edit page
-  @account.fill_out_optional_attributes
-end
-
-And /^I fill in the missing Cornell-specific fields for the new Account$/ do
-  # We expect to already be on a Account document create/copy/edit page
-  @account.fill_out_extended_attributes(:required)
-end
-
 When /^I start to copy a Contracts and Grants Account$/ do
   visit(MainPage).account
   on AccountLookupPage do |l|
@@ -362,7 +347,6 @@ When /^I start to copy a Contracts and Grants Account$/ do
 
   @account = make AccountObject
   @account.absorb! :original
-  puts @account.inspect
   step 'I add the account to the stack'
 end
 
@@ -371,33 +355,89 @@ And /^the fields from the old Account populate those in the new Account document
   # I compare that 'New' d.o. to the 'Old' d.o. (@account)
   @account = make AccountObject
   @account.absorb! :new
-  puts @account.inspect
   step 'I add the account to the stack'
 
-  puts @accounts[0].class.attributes.sort
-  puts (@accounts[0] == @accounts[1]).inspect
-
-  # @accounts[0].class.attributes
-  #        .delete_if{ |a| @accounts[0].class.uncopied_attributes.include?(a) } #@accounts[0].instance_variable_get("@#{a}").nil? }
-  #        .collect{ |a| {
-  #                  attr: "@#{a}",
-  #                  a: @accounts[0].instance_variable_get("@#{a}"),
-  #                  b: @accounts[1].instance_variable_get("@#{a}"),
-  #                  c: (@accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}") || @accounts[1].instance_variable_get("@#{a}").empty?)
-  #                } }.each{|r| puts r.inspect}
-  #
-  # @accounts[0].class.attributes
-  #             .delete_if{ |a| @accounts[0].instance_variable_get("@#{a}").nil? }
-  #             .collect{ |a| {
-  #                 attr: "@#{a}",
-  #                 a: @accounts[0].instance_variable_get("@#{a}"),
-  #                 b: @accounts[1].instance_variable_get("@#{a}"),
-  #                 c: (@accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}") || @accounts[1].instance_variable_get("@#{a}").empty?)
-  #             } }.all?{ |r| r[:attr] == '@effective_date' ? true : r[:c] }.should
-
-  pending
+  (@accounts[0] == @accounts[1]).should
 end
 
 And /^I add the account to the stack$/ do
   @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
+end
+
+And /^I update the Account with the following changes:$/ do |updates|
+  updates = updates.rows_hash.snake_case_key
+
+  # Now go through and make sure anything with "Same as Original" pulls from the previous one.
+  # We assume that we have at least two accounts in the stack and that the last one is the account to update.
+  updates.each do |k, v|
+    new_val = case v
+                when 'Same as Original'
+                  @accounts[-2].instance_variable_get("@#{k}")
+                when 'Checked'
+                  :set
+                when 'Unchecked'
+                  :clear
+                else
+                  v
+              end
+    updates.store k, new_val
+  end
+  updates[:description] = random_alphanums(37, 'AFT') unless updates[:description].match(/[Rr]andom/).nil?
+
+  # If you need to support additional fields, you'll need to implement them above.
+
+  @account.edit updates
+  @accounts[-1] = @account # Update that stack!
+end
+
+And /^I update the Account's Contracts and Grants tab with the following changes:$/ do |updates|
+  updates = updates.rows_hash.snake_case_key
+
+  # Now go through and make sure anything with "Same as Original" pulls from the previous one.
+  # We assume that we have at least two accounts in the stack and that the last one is the account to update.
+  updates.each do |k, v|
+    new_val = case v
+                when 'Same as Original'
+                  @accounts[-2].instance_variable_get("@#{k}")
+                when 'Checked'
+                  :set
+                when 'Unchecked'
+                  :clear
+                else
+                  v
+              end
+    updates.store k, new_val
+  end
+
+  puts updates.inspect
+  # If you need to support additional fields, you'll need to implement them above.
+
+  @account.edit updates
+  @accounts[-1] = @account # Update that stack!
+end
+
+And /^I update the Account's Indirect Cost Recovery tab with the following changes:$/ do |updates|
+  updates = updates.rows_hash.snake_case_key
+
+  # Now go through and make sure anything with "Same as Original" pulls from the previous one.
+  # We assume that we have at least two accounts in the stack and that the last one is the account to update.
+  updates.each do |k, v|
+    new_val = case v
+                when 'Same as Original'
+                  @accounts[-2].instance_variable_get("@#{k}")
+                when 'Checked'
+                  :set
+                when 'Unchecked'
+                  :clear
+                else
+                  v
+              end
+    updates.store k, new_val
+  end
+
+  # If you need to support additional fields, you'll need to implement them above.
+
+  @account.edit updates
+  @accounts[-1] = @account # Update that stack!
+  pending
 end
