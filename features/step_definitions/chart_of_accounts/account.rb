@@ -71,15 +71,6 @@ When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   step 'I add the account to the stack'
 end
 
-Then /^an error in the (.*) tab should say "(.*)"$/ do |tab, error|
-  hash = {'Account Maintenance' => :account_maintenance_errors}
-
-  on AccountPage do |page|
-    page.send(hash[tab]).should include error
-  end
-
-end
-
 And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
   visit(MainPage).account
   on AccountLookupPage do |page|
@@ -244,12 +235,6 @@ And /^I enter a Continuation Account Number that equals the Account Number$/ do
   on(AccountPage) { |page| page.continuation_account_number.fit page.original_account_number }
 end
 
-Then /^an empty error should appear$/ do
-  on AccountPage do |page|
-    page.error_message_of('').should exist
-  end
-end
-
 And /^I clone a random Account with the following changes:$/ do |table|
   step "I clone Account nil with the following changes:", table
 end
@@ -364,7 +349,7 @@ And /^I fill in the missing Cornell-specific fields for the new Account$/ do
   @account.fill_out_extended_attributes(:required)
 end
 
-When /^I start to copy a C&G Account$/ do
+When /^I start to copy a Contracts and Grants Account$/ do
   visit(MainPage).account
   on AccountLookupPage do |l|
     l.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
@@ -376,30 +361,40 @@ When /^I start to copy a C&G Account$/ do
   end
 
   @account = make AccountObject
-  @account.absorb(:original)
+  @account.absorb! :original
   puts @account.inspect
   step 'I add the account to the stack'
 end
 
-And /^all default fields are filled in for the new Account$/ do
+And /^the fields from the old Account populate those in the new Account document$/ do
   # I make a temporary data object by absorbing the 'New' Account information
   # I compare that 'New' d.o. to the 'Old' d.o. (@account)
   @account = make AccountObject
-  @account.absorb(:new)
+  @account.absorb! :new
   puts @account.inspect
   step 'I add the account to the stack'
 
+  puts @accounts[0].class.attributes.sort
   puts (@accounts[0] == @accounts[1]).inspect
 
-  @accounts[0].class.attributes
-         .delete_if{ |a| @accounts[0].instance_variable_get("@#{a}").nil? }
-         .collect{ |a| {
-                   attr: "@#{a}",
-                   a: @accounts[0].instance_variable_get("@#{a}"),
-                   b: @accounts[1].instance_variable_get("@#{a}"),
-                   c: @accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}")
-                 } }.each{|r| puts r.inspect}
-  # TODO: Figure out which fields are set by default (parameter?)
+  # @accounts[0].class.attributes
+  #        .delete_if{ |a| @accounts[0].class.uncopied_attributes.include?(a) } #@accounts[0].instance_variable_get("@#{a}").nil? }
+  #        .collect{ |a| {
+  #                  attr: "@#{a}",
+  #                  a: @accounts[0].instance_variable_get("@#{a}"),
+  #                  b: @accounts[1].instance_variable_get("@#{a}"),
+  #                  c: (@accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}") || @accounts[1].instance_variable_get("@#{a}").empty?)
+  #                } }.each{|r| puts r.inspect}
+  #
+  # @accounts[0].class.attributes
+  #             .delete_if{ |a| @accounts[0].instance_variable_get("@#{a}").nil? }
+  #             .collect{ |a| {
+  #                 attr: "@#{a}",
+  #                 a: @accounts[0].instance_variable_get("@#{a}"),
+  #                 b: @accounts[1].instance_variable_get("@#{a}"),
+  #                 c: (@accounts[0].instance_variable_get("@#{a}") == @accounts[1].instance_variable_get("@#{a}") || @accounts[1].instance_variable_get("@#{a}").empty?)
+  #             } }.all?{ |r| r[:attr] == '@effective_date' ? true : r[:c] }.should
+
   pending
 end
 
