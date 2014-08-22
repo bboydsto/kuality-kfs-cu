@@ -47,11 +47,7 @@ Feature: KFS Fiscal Officer Account Copy
       | Invoice Type Code                       | Same as Original |
       | Cost Share for Project Number           | Same as Original |
     And   I inspect the Account document
-    And   I update the Account's Indirect Cost Recovery tab with the following changes:
-      | Chart Code           | Same as Original |
-      | Account Number       | Same as Original |
-      | Account Line Percent | Same as Original |
-      | Active               | True             |
+    And   I copy the old Account's Indirect Cost Recovery tab to the new Account
     And   I inspect the Account document
     And   I stop here
     # Do it again?

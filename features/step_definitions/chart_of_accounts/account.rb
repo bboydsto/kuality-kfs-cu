@@ -236,7 +236,7 @@ And /^I enter a Continuation Account Number that equals the Account Number$/ do
 end
 
 And /^I clone a random Account with the following changes:$/ do |table|
-  step "I clone Account nil with the following changes:", table
+  step 'I clone Account nil with the following changes:', table
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
@@ -408,36 +408,18 @@ And /^I update the Account's Contracts and Grants tab with the following changes
               end
     updates.store k, new_val
   end
-
-  puts updates.inspect
   # If you need to support additional fields, you'll need to implement them above.
 
   @account.edit updates
   @accounts[-1] = @account # Update that stack!
 end
 
-And /^I update the Account's Indirect Cost Recovery tab with the following changes:$/ do |updates|
-  updates = updates.rows_hash.snake_case_key
-
-  # Now go through and make sure anything with "Same as Original" pulls from the previous one.
-  # We assume that we have at least two accounts in the stack and that the last one is the account to update.
-  updates.each do |k, v|
-    new_val = case v
-                when 'Same as Original'
-                  @accounts[-2].instance_variable_get("@#{k}")
-                when 'Checked'
-                  :set
-                when 'Unchecked'
-                  :clear
-                else
-                  v
-              end
-    updates.store k, new_val
-  end
-
-  # If you need to support additional fields, you'll need to implement them above.
-
-  @account.edit updates
+And /^I copy the old Account's Indirect Cost Recovery tab to the new Account$/ do
+  update = @accounts[-2].icr_accounts.to_update
+  update[:icr_accounts].first[:account_line_percent] = '1'
+  puts update.inspect
+  @account.edit update
+  puts @account.inspect
   @accounts[-1] = @account # Update that stack!
   pending
 end
