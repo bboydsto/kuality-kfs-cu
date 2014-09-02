@@ -261,20 +261,19 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
                       chart_code:  updates['Chart Code'],
                       number:      random_alphanums(7),
                       document_id: page.document_id,
-                      indirect_cost_recovery_chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
-                      indirect_cost_recovery_account_number:         updates['Indirect Cost Recovery Account Number'],
-                      indirect_cost_recovery_account_line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
-                      indirect_cost_recovery_active_indicator:       updates['Indirect Cost Recovery Active Indicator'],
                       press: nil
       page.description.fit @account.description
       page.name.fit        @account.name
       page.chart_code.fit  @account.chart_code
       page.number.fit      @account.number
       page.supervisor_principal_name.fit @account.supervisor_principal_name
-      page.indirect_cost_recovery_chart_of_accounts_code.fit @account.indirect_cost_recovery_chart_of_accounts_code unless @account.indirect_cost_recovery_chart_of_accounts_code.nil?
-      page.indirect_cost_recovery_account_number.fit         @account.indirect_cost_recovery_account_number unless @account.indirect_cost_recovery_account_number.nil?
-      page.indirect_cost_recovery_account_line_percent.fit   @account.indirect_cost_recovery_account_line_percent unless @account.indirect_cost_recovery_account_line_percent.nil?
-      page.indirect_cost_recovery_active_indicator.fit       @account.indirect_cost_recovery_active_indicator unless @account.indirect_cost_recovery_active_indicator.nil?
+      unless updates['Indirect Cost Recovery Chart Of Accounts Code'] && updates['Indirect Cost Recovery Account Number'] &&
+             updates['Indirect Cost Recovery Account Line Percent'] && updates['Indirect Cost Recovery Active Indicator']
+        @account.icr_accounts.add chart_of_accounts_code: updates['Indirect Cost Recovery Chart Of Accounts Code'],
+                                  account_number:         updates['Indirect Cost Recovery Account Number'],
+                                  line_percent:   updates['Indirect Cost Recovery Account Line Percent'],
+                                  active_indicator:       updates['Indirect Cost Recovery Active Indicator']
+      end
 
       page.blanket_approve
       sleep 5
