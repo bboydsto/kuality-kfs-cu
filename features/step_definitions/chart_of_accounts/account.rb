@@ -417,9 +417,6 @@ end
 And /^I copy the old Account's Indirect Cost Recovery tab to the new Account$/ do
   update = @accounts[-2].icr_accounts.to_update
   update[:icr_accounts].first[:account_line_percent] = '1'
-  puts update.inspect
   @account.edit update
-  puts @account.inspect
   @accounts[-1] = @account # Update that stack!
-  pending
 end
