@@ -15,29 +15,20 @@ Feature: KFS Fiscal Officer Account Copy
     And   I copy an Account
     Then  the Account Maintenance Document saves with no errors
 
-  @KFSQA-838 @cornell @smoke @CG @Copy @Routing @wip1
+  @KFSQA-838 @cornell @smoke @CG @Copy @Routing @nightly-jobs @wip
   Scenario: Copy C&G Account (Smoke Test)
     Given I am logged in as a KFS User
     When  I start to copy a Contracts and Grants Account
     And   I inspect the Account document
-#    When I open a C&G account (with existing a CFDA #, Indirect Cost Rate EC0, and Account Indirect Cost Recovery Type Code 22)
-#    And enter chart
-#    And enter Account number
-#    And search
-#    And select copy
     Then  the fields from the old Account populate those in the new Account document
-    And   I inspect the Account document
-#    And The original fields with values, auto populate in new fields. (Caution: This may vary depending on account used.) Likely the following fields will auto populate: Original section: Account Name, Organization Code, Campus Code, Account Effective Date, Account Expiration Date, Account Postal Code, Account City Name, Account State Code, Account Street Address, Account Type Code, Sub-fund Group code, Account Fringe Benefit checked, Higher Ed Function Code, Account Restricted Status Code, Labor Benefit Rate Category Code. Account Responsibility section: Fiscal Officer Principal name, Account Supervisor Principal Name, Account manager Principal Name, Continuation Chart of Accounts Code, Continuation Account Number, Budget Record Level Code, Account Sufficient Funds Code. Guidelines and Purpose section: Account Expense Guideline Text, Account Income Guideline Text, Account Purpose Text. (nothing for account description section) Contract and Grants Section: Contract Control Chart of Accounts Code, Contract Control Account Number, Account Indirect Cost Recovery Type Code, Indirect Cost Rate, CFDA Number, CG Account Responsibility ID, Invoice Frequency Code, Invoice Type Code, and eVerify indicator is no/off. Indirect Cost Recovery Accounts section: Active indicator checked, Indirect Cost Recovery Chart of Accounts Code, Indirect Cost Recovery Account Number, Account Line Percent, Active indicator checked.
-#    And Verify new attributes and CFDA# persist: Invoice frequency, Invoice type code, eVerify indicator, Cost Share for Project Number
     And   I update the Account with the following changes:
       | Description                        | Random           |
       | Chart Code                         | Same as Original |
-      | Number                             | Same as Original |
+      | Number                             | Random           |
       | Appropriation Account Number       | Same as Original |
       | Labor Benefit Rate Category Code   | Same as Original |
       | Major Reporting Category Code      | Same as Original |
       | Subfund Program Code               | Same as Original |
-    And   I inspect the Account document
     And   I update the Account's Contracts and Grants tab with the following changes:
       | Contract Control Chart of Accounts Code | Same as Original |
       | Contract Control Account Number         | Same as Original |
@@ -46,49 +37,21 @@ Feature: KFS Fiscal Officer Account Copy
       | Invoice Frequency Code                  | Same as Original |
       | Invoice Type Code                       | Same as Original |
       | Cost Share for Project Number           | Same as Original |
-    And   I inspect the Account document
-    And   I copy the old Account's Indirect Cost Recovery tab to the new Account
-    And   I inspect the Account document
-    And   I stop here
-    # Do it again?
+    And   I add an additional Indirect Cost Recovery Account if the Account's Indirect Cost Recovery tab is empty
 
-#    And enter description
-#    And Enter Chart code (original section)
-#    And Enter account number (original section)
-#    And Enter or keep Appropriation Number (original section)
-#    And Enter or keep Labor Benefit Rate Category (original section)
-#    And Enter Major Reporting Category
-#    And Enter or keep subfung program
-#    And Enter or keep Continuation Account Number (cannot be an expired or inactive account)
-#    And enter or keep CFDA # - Verify CFDA # persists (C&G section)
-#    And eVerify indicator is not checked ( C&G section)
-#    And change invoice frequency code ( C&G section)
-#    And change invoice type code ( C&G section)
-#    And Enter or keep Cost Share for Project Number ( C&G section)
-#    And Enter new Indirect cost recovery chart of accounts code (IDC Recovery accts section)
-#    And Enter new Indirect Cost Recovery Account Number
-#    And Enter Line Percent
-#    And Active indicator is checked
-#    And Add new IDC recovery chart of accounts code, IDC recovery account number, and account line percent OR edit existing IDC recovery account line percent(s), so that total percent is 100% for all IDC recovery accounts listed.
-#    And click add
+    And   I inspect the Account document
 
-    And   I stop here because I want to verify that the previous steps worked
     And   I submit the Account document
     Then  the document should have no errors
     When  I reload the Account document
     Then  the values submitted for the Account document persist
-    #And Verify new attributes and CFDA# persist: Invoice frequency, Invoice type code, eVerify indicator, Cost Share for Project Number
+    And   I stop here because I want to verify that the previous steps worked
     And   the Account document's route log is:
       | Role                  | Action  |
       | Fiscal Officer        | APPROVE |
       | Organization Reviewer | APPROVE |
       | C&G Processor         | APPROVE |
       | Sub-Fund Reviewer     | APPROVE |
-#    And Verify routing to FO
-#    And Verify routing to Organization Reviewer
-#    And Verify routing to C&G Processor
-#    And Verify routing to Sub-Fund reviewer
-#    And Verify FYI to Account Supervisor
 
     When  I route the Account document to final
     Then  the Account document goes to FINAL

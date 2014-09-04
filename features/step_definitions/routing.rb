@@ -96,3 +96,32 @@ And /^the initiator is not an approver in the Future Actions table$/ do
     page.future_actions_table.rows(text: /APPROVE/m).any? { |r| r.text.include? 'Initiator' }.should_not
   end
 end
+
+And /^the (.*) document's route log is:$/ do |document, desired_route_log|
+  # desired_route_log.hashes.keys => [:Role, :Action]
+
+  on page_class_for(document) do |page|
+    page.show_route_log_button.wait_until_present
+    page.show_route_log unless page.route_log_shown?
+
+    page.pnd_act_req_table_action.visible?.should
+
+    # Note: This expects you to list out the full log from start to some end point.
+    #       You cannot skip any interim entries, though you could probably skip
+    #       entries at the end of the list.
+    desired_route_log.hashes.each_with_index do |row, i|
+
+      if page.pnd_act_req_table_requested_of(i).text.match(/Multiple/m)
+        page.show_pending_action_requests_in_action_list if page.pending_action_requests_in_action_list_hidden?
+
+        page.pnd_act_req_table_multi(i).visible?.should
+        page.pnd_act_req_table_multi_action(i).text.should match(/#{row[:Action]}/)
+        page.pnd_act_req_table_multi_annotation(i).text.should match(/#{row[:Role]}/)
+      else
+        page.pnd_act_req_table_action(i).text.should match(/#{row[:Action]}/)
+        page.pnd_act_req_table_annotation(i).text.should match(/#{row[:Role]}/)
+      end
+
+    end
+  end
+end

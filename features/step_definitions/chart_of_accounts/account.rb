@@ -334,18 +334,21 @@ And /^I use these Accounts:$/ do |table|
 end
 
 When /^I start to copy a Contracts and Grants Account$/ do
+  cg_account_number = get_account_of_type 'Contracts & Grants with ICR'
   visit(MainPage).account
-  on AccountLookupPage do |l|
-    l.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
-    l.account_number.fit '1258320' # TODO: Replace account number with ParameterConstants::DEFAULT_CONTRACTS_AND_GRANTS_ACCOUNT_NUMBER or somesuch
-    l.search
+  on AccountLookupPage do |alp|
+    alp.chart_code.fit     get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
+    alp.account_number.fit cg_account_number
+    alp.search
 
-    l.item_row('1258320').exist?.should # TODO: Replace account number with ParameterConstants::DEFAULT_CONTRACTS_AND_GRANTS_ACCOUNT_NUMBER or somesuch
-    l.copy_random
+    alp.item_row(cg_account_number).exist?.should
+    alp.copy_random
   end
 
   @account = make AccountObject
-  @account.absorb! :original
+  @account.absorb! :old
+  @account.edit description: @account.description # This will be auto-generated, but not auto-populated
+  #               number:      @account.number
   step 'I add the account to the stack'
 end
 
@@ -376,16 +379,36 @@ And /^I update the Account with the following changes:$/ do |updates|
                   :set
                 when 'Unchecked'
                   :clear
+                when 'Random'
+                  case k
+                    when :description
+                      random_alphanums(37, 'AFT')
+                    when :number
+                      random_alphanums(7).upcase
+                    else
+                      v # No change
+                  end
                 else
-                  v
+                  v # No change
               end
     updates.store k, new_val
   end
-  updates[:description] = random_alphanums(37, 'AFT') unless updates[:description].match(/[Rr]andom/).nil?
 
   # If you need to support additional fields, you'll need to implement them above.
 
   @account.edit updates
+
+  # Now, let's make sure the changes persisted.
+  on AccountPage do |page|
+    values_on_page = page.new_account_data
+    values_on_page.keys.each do |cfda_field|
+      unless updates[cfda_field].nil?
+        @account.instance_variable_get("@#{cfda_field}").should == updates[cfda_field]
+        values_on_page[cfda_field].should == @account.instance_variable_get("@#{cfda_field}")
+      end
+    end
+  end
+
   @accounts[-1] = @account # Update that stack!
 end
 
@@ -410,12 +433,54 @@ And /^I update the Account's Contracts and Grants tab with the following changes
   # If you need to support additional fields, you'll need to implement them above.
 
   @account.edit updates
+
+  # Now, let's make sure the changes persisted.
+  on AccountPage do |page|
+    values_on_page = page.new_account_data
+    [
+      :contract_control_chart_of_accounts_code, :contract_control_account_number,
+      :account_icr_type_code, :indirect_cost_rate, :cfda_number, :cg_account_responsibility_id,
+      :invoice_frequency_code, :invoice_type_code, :everify_indicator, :cost_share_for_project_number
+    ].each do |cfda_field|
+      unless updates[cfda_field].nil?
+        @account.instance_variable_get("@#{cfda_field}").should == updates[cfda_field]
+        values_on_page[cfda_field].should == @account.instance_variable_get("@#{cfda_field}")
+      end
+    end
+  end
+
   @accounts[-1] = @account # Update that stack!
 end
 
 And /^I copy the old Account's Indirect Cost Recovery tab to the new Account$/ do
   update = @accounts[-2].icr_accounts.to_update
-  update[:icr_accounts].first[:account_line_percent] = '1'
   @account.edit update
   @accounts[-1] = @account # Update that stack!
+end
+
+And /^I add an additional Indirect Cost Recovery Account if the Account's Indirect Cost Recovery tab is empty$/ do
+  if @account.icr_accounts.length < 1 || @account.icr_accounts.account_line_percent_sum < 100
+    @account.icr_accounts.add chart_of_accounts_code: get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE),
+                              account_number:         '',
+                              account_line_percent:   (@account.icr_accounts.length < 1 ? '100' : (100 - @account.icr_accounts.account_line_percent_sum).to_s),
+                              active_indicator:       :set
+    @accounts[-1] = @account # Update that stack!
+  end
+end
+
+Then /^the values submitted for the Account document persist$/ do
+  # Now, let's make sure the changes persisted.
+  on AccountPage do |page|
+    values_on_page = page.new_account_data
+
+    values_on_page.keys.each do |cfda_field|
+      unless values_on_page[cfda_field].nil?
+        @account.instance_variable_get("@#{cfda_field}").should == values_on_page[cfda_field]
+        values_on_page[cfda_field].should == @account.instance_variable_get("@#{cfda_field}")
+      end
+    end
+  end
+  icra_collection_on_page = collection('IndirectCostRecoveryLineObject')
+  icra_collection_on_page.update_from_page! :old
+  icra_collection_on_page.each_with_index { |icra, i| icra.to_update.should == @account.icr_accounts[i].to_update }
 end
