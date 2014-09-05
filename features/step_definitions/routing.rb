@@ -111,15 +111,15 @@ And /^the (.*) document's route log is:$/ do |document, desired_route_log|
     #       entries at the end of the list.
     desired_route_log.hashes.each_with_index do |row, i|
 
-      if page.pnd_act_req_table_requested_of(i).text.match(/Multiple/m)
+      if page.pnd_act_req_table_requested_of(i+1).text.match(/Multiple/m)
         page.show_pending_action_requests_in_action_list if page.pending_action_requests_in_action_list_hidden?
 
-        page.pnd_act_req_table_multi(i).visible?.should
-        page.pnd_act_req_table_multi_action(i).text.should match(/#{row[:Action]}/)
-        page.pnd_act_req_table_multi_annotation(i).text.should match(/#{row[:Role]}/)
+        page.pnd_act_req_table_multi(i+1).visible?.should
+        page.pnd_act_req_table_multi_action(i+1).text.should match(/#{row[:Action]}/)
+        page.pnd_act_req_table_multi_annotation(i+1).text.should match(/#{row[:Role]}/)
       else
-        page.pnd_act_req_table_action(i).text.should match(/#{row[:Action]}/)
-        page.pnd_act_req_table_annotation(i).text.should match(/#{row[:Role]}/)
+        page.pnd_act_req_table_action(i+1).text.should match(/#{row[:Action]}/)
+        page.pnd_act_req_table_annotation(i+1).text.should match(/#{row[:Role]}/)
       end
 
     end

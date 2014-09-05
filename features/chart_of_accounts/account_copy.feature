@@ -45,14 +45,15 @@ Feature: KFS Fiscal Officer Account Copy
     Then  the document should have no errors
     When  I reload the Account document
     Then  the values submitted for the Account document persist
-    And   I stop here because I want to verify that the previous steps worked
-    And   the Account document's route log is:
-      | Role                  | Action  |
-      | Fiscal Officer        | APPROVE |
-      | Organization Reviewer | APPROVE |
-      | C&G Processor         | APPROVE |
-      | Sub-Fund Reviewer     | APPROVE |
 
+    And   the Account document's route log is:
+      | Role                         | Action  |
+      | Fiscal Officer               | APPROVE |
+      | Organization Reviewer        | APPROVE |
+      | Contracts & Grants Processor | APPROVE |
+      | Sub-Fund Reviewer            | APPROVE |
+
+    And   I stop here because I want to verify that the previous steps worked
     When  I route the Account document to final
     Then  the Account document goes to FINAL
 

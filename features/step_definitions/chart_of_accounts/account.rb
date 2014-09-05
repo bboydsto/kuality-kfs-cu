@@ -472,15 +472,17 @@ Then /^the values submitted for the Account document persist$/ do
   # Now, let's make sure the changes persisted.
   on AccountPage do |page|
     values_on_page = page.new_account_data
+    values_on_page.each { |k, v|  v.gsub!(/[ ]*[\n]+[ ]*/, ' ') if v.is_a?(String) }
 
     values_on_page.keys.each do |cfda_field|
       unless values_on_page[cfda_field].nil?
-        @account.instance_variable_get("@#{cfda_field}").should == values_on_page[cfda_field]
-        values_on_page[cfda_field].should == @account.instance_variable_get("@#{cfda_field}")
+        value_in_memory = @account.instance_variable_get("@#{cfda_field}")
+        value_in_memory.gsub!(/[ ]*[\n]+[ ]*/, ' ') if value_in_memory.instance_of?(String)
+
+        values_on_page[cfda_field].should == value_in_memory
       end
     end
   end
-  icra_collection_on_page = collection('IndirectCostRecoveryLineObject')
-  icra_collection_on_page.update_from_page! :old
-  icra_collection_on_page.each_with_index { |icra, i| icra.to_update.should == @account.icr_accounts[i].to_update }
+  icra_collection_on_page = @account.icr_accounts.updates_pulled_from_page :old
+  icra_collection_on_page.each_with_index { |icra, i| icra.should == @account.icr_accounts[i].to_update }
 end
