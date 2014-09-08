@@ -15,7 +15,7 @@ Feature: KFS Fiscal Officer Account Copy
     And   I copy an Account
     Then  the Account Maintenance Document saves with no errors
 
-  @KFSQA-838 @cornell @smoke @CG @Copy @Routing @nightly-jobs @wip
+  @KFSQA-838 @cornell @smoke @CG @Copy @Routing @nightly-jobs @coral @wip
   Scenario: Copy C&G Account (Smoke Test)
     Given I am logged in as a KFS User
     When  I start to copy a Contracts and Grants Account

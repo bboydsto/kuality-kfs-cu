@@ -534,22 +534,15 @@ And /^the General Ledger Pending entries match the accounting lines on the (.*) 
 end
 
 And /^I add these accounting lines to the (.*) document:$/ do |document, table|
-  updates = table.hashes.snake_case_key
-
-  (0..(table.rows.length-1)).to_a.each do |i|
-    new_account_number = case updates[:account_number][i]
-                           when 'Just Created'
-                             @account.number
-                           else
-                             get_account_of_type updates[:account_number][i]
-                         end
-    update = {
-      type:           snake_case(updates[:type][i]),
-      account_number: new_account_number,
-      object:         updates[:object][i],
-      amount:         updates[:amount][i]
-    }
-    puts "Adding this line: #{update}"
-    document_object_for(document).add_line update
+  updates = table.hashes.collect{ |h| h.snake_case_key }
+  updates.each do |update|
+    update[:account_number] = case update[:account_number]
+                                when 'Just Created'
+                                  @account.number
+                                else
+                                  get_account_of_type update[:account_number]
+                              end
+    update[:type] = AccountingLineObject::get_type_conversion(update[:type])
+    document_object_for(document).add_line update[:type], update
   end
 end
