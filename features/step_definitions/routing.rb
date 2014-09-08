@@ -104,24 +104,21 @@ And /^the (.*) document's route log is:$/ do |document, desired_route_log|
     page.show_route_log_button.wait_until_present
     page.show_route_log unless page.route_log_shown?
 
+    page.show_pending_action_requests unless page.pending_action_requests_shown?
     page.pnd_act_req_table_action.visible?.should
+
+    page.show_future_action_requests unless page.future_action_requests_shown?
+    page.future_actions_table.visible?.should
+
 
     # Note: This expects you to list out the full log from start to some end point.
     #       You cannot skip any interim entries, though you could probably skip
     #       entries at the end of the list.
+    route_log = page.route_log_hash
     desired_route_log.hashes.each_with_index do |row, i|
-
-      if page.pnd_act_req_table_requested_of(i+1).text.match(/Multiple/m)
-        page.show_pending_action_requests_in_action_list if page.pending_action_requests_in_action_list_hidden?
-
-        page.pnd_act_req_table_multi(i+1).visible?.should
-        page.pnd_act_req_table_multi_action(i+1).text.should match(/#{row[:Action]}/)
-        page.pnd_act_req_table_multi_annotation(i+1).text.should match(/#{row[:Role]}/)
-      else
-        page.pnd_act_req_table_action(i+1).text.should match(/#{row[:Action]}/)
-        page.pnd_act_req_table_annotation(i+1).text.should match(/#{row[:Role]}/)
-      end
-
+      route_log[:annotation][i].should match /#{row[:Role]}/
+      route_log[:action][i].should match /#{row[:Action]}/
     end
+
   end
 end

@@ -472,14 +472,16 @@ Then /^the values submitted for the Account document persist$/ do
   # Now, let's make sure the changes persisted.
   on AccountPage do |page|
     values_on_page = page.new_account_data
-    values_on_page.each { |k, v|  v.gsub!(/[ ]*[\n]+[ ]*/, ' ') if v.is_a?(String) }
 
     values_on_page.keys.each do |cfda_field|
       unless values_on_page[cfda_field].nil?
         value_in_memory = @account.instance_variable_get("@#{cfda_field}")
-        value_in_memory.gsub!(/[ ]*[\n]+[ ]*/, ' ') if value_in_memory.instance_of?(String)
 
-        values_on_page[cfda_field].should == value_in_memory
+        if values_on_page[cfda_field].is_a? String
+          values_on_page[cfda_field].eql_ignoring_whitespace?(value_in_memory).should be true
+        else
+          values_on_page[cfda_field].should == value_in_memory
+        end
       end
     end
   end

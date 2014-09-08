@@ -19,9 +19,9 @@ Feature: KFS Fiscal Officer Account Copy
   Scenario: Copy C&G Account (Smoke Test)
     Given I am logged in as a KFS User
     When  I start to copy a Contracts and Grants Account
-    And   I inspect the Account document
     Then  the fields from the old Account populate those in the new Account document
-    And   I update the Account with the following changes:
+
+    When  I update the Account with the following changes:
       | Description                        | Random           |
       | Chart Code                         | Same as Original |
       | Number                             | Random           |
@@ -38,22 +38,17 @@ Feature: KFS Fiscal Officer Account Copy
       | Invoice Type Code                       | Same as Original |
       | Cost Share for Project Number           | Same as Original |
     And   I add an additional Indirect Cost Recovery Account if the Account's Indirect Cost Recovery tab is empty
-
-    And   I inspect the Account document
-
     And   I submit the Account document
     Then  the document should have no errors
     When  I reload the Account document
     Then  the values submitted for the Account document persist
-
     And   the Account document's route log is:
       | Role                         | Action  |
       | Fiscal Officer               | APPROVE |
-      | Organization Reviewer        | APPROVE |
+#      | Organization Reviewer        | APPROVE | # Pending verification from Functionals
       | Contracts & Grants Processor | APPROVE |
       | Sub-Fund Reviewer            | APPROVE |
 
-    And   I stop here because I want to verify that the previous steps worked
     When  I route the Account document to final
     Then  the Account document goes to FINAL
 
