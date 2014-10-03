@@ -400,7 +400,7 @@ And /^I update the Account with the following changes:$/ do |updates|
 
   # Now, let's make sure the changes persisted.
   on AccountPage do |page|
-    values_on_page = page.new_account_data
+    values_on_page = page.account_data_new
     values_on_page.keys.each do |cfda_field|
       unless updates[cfda_field].nil?
         @account.instance_variable_get("@#{cfda_field}").should == updates[cfda_field]
@@ -436,7 +436,7 @@ And /^I update the Account's Contracts and Grants tab with the following changes
 
   # Now, let's make sure the changes persisted.
   on AccountPage do |page|
-    values_on_page = page.new_account_data
+    values_on_page = page.account_data_new
     [
       :contract_control_chart_of_accounts_code, :contract_control_account_number,
       :account_icr_type_code, :indirect_cost_rate, :cfda_number, :cg_account_responsibility_id,
@@ -471,7 +471,7 @@ end
 Then /^the values submitted for the Account document persist$/ do
   # Now, let's make sure the changes persisted.
   on AccountPage do |page|
-    values_on_page = page.new_account_data
+    values_on_page = page.account_data_new
 
     values_on_page.keys.each do |cfda_field|
       unless values_on_page[cfda_field].nil?

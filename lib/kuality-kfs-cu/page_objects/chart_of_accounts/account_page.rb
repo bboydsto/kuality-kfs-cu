@@ -11,72 +11,72 @@ class AccountPage
   element(:invoice_type_code) { |b| b.frm.select(name: 'document.newMaintainableObject.extension.invoiceTypeCode') }
 
   # New
-  value(:new_subfund_program_code) { |b| b.subfund_program_code.value }
-  value(:new_major_reporting_category_code) { |b| b.major_reporting_category_code.value }
-  value(:new_appropriation_account_number) { |b| b.appropriation_account_number.value }
-  value(:new_labor_benefit_rate_category_code) { |b| b.labor_benefit_rate_category_code.value }
-  value(:new_everify_indicator) { |b| yesno2setclear(b.everify_indicator.set?) }
-  value(:new_cost_share_for_project_number) { |b| b.cost_share_for_project_number.value }
-  value(:new_invoice_frequency_code) { |b| b.invoice_frequency_code.selected_options.first.text }
-  value(:new_invoice_type_code) { |b| b.invoice_type_code.selected_options.first.text }
+  value(:subfund_program_code_new) { |b| b.subfund_program_code.value }
+  value(:major_reporting_category_code_new) { |b| b.major_reporting_category_code.value }
+  value(:appropriation_account_number_new) { |b| b.appropriation_account_number.value }
+  value(:labor_benefit_rate_category_code_new) { |b| b.labor_benefit_rate_category_code.value }
+  value(:everify_indicator_new) { |b| yesno2setclear(b.everify_indicator.set?) }
+  value(:cost_share_for_project_number_new) { |b| b.cost_share_for_project_number.value }
+  value(:invoice_frequency_code_new) { |b| b.invoice_frequency_code.selected_options.first.text }
+  value(:invoice_type_code_new) { |b| b.invoice_type_code.selected_options.first.text }
 
   # Old
-  value(:old_subfund_program_code) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.programCode.div').text.strip }
-  value(:old_major_reporting_category_code) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.majorReportingCategoryCode.div').text.strip }
-  value(:old_appropriation_account_number) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.appropriationAccountNumber.div').text.strip }
-  value(:old_labor_benefit_rate_category_code) { |b| b.frm.span(id: 'document.oldMaintainableObject.laborBenefitRateCategoryCode.div').text.strip }
-  value(:old_everify_indicator) { |b| yesno2setclear(b.frm.span(id: 'document.oldMaintainableObject.extension.everify.div').text.strip) }
-  value(:old_cost_share_for_project_number) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.costShareForProjectNumber.div').text.strip }
-  value(:old_invoice_frequency_code) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.invoiceFrequencyCode.div').text.strip }
-  value(:old_invoice_type_code) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.invoiceTypeCode.div').text.strip }
+  value(:subfund_program_code_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.programCode.div').text.strip }
+  value(:major_reporting_category_code_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.majorReportingCategoryCode.div').text.strip }
+  value(:appropriation_account_number_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.appropriationAccountNumber.div').text.strip }
+  value(:labor_benefit_rate_category_code_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.laborBenefitRateCategoryCode.div').text.strip }
+  value(:everify_indicator_old) { |b| yesno2setclear(b.frm.span(id: 'document.oldMaintainableObject.extension.everify.div').text.strip) }
+  value(:cost_share_for_project_number_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.costShareForProjectNumber.div').text.strip }
+  value(:invoice_frequency_code_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.invoiceFrequencyCode.div').text.strip }
+  value(:invoice_type_code_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.invoiceTypeCode.div').text.strip }
 
 
   # Read-Only
-  value(:readonly_subfund_program_code) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.programCode.div').text.strip }
-  value(:readonly_major_reporting_category_code) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.majorReportingCategoryCode.div').text.strip }
-  value(:readonly_appropriation_account_number) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.appropriationAccountNumber.div').text.strip }
-  value(:readonly_labor_benefit_rate_category_code) { |b| b.frm.span(id: 'document.newMaintainableObject.laborBenefitRateCategoryCode.div').text.strip }
-  value(:readonly_everify_indicator) { |b| yesno2setclear(b.frm.span(id: 'document.newMaintainableObject.extension.everify.div').text.strip) }
-  value(:readonly_cost_share_for_project_number) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.costShareForProjectNumber.div').text.strip }
-  value(:readonly_invoice_frequency_code) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.invoiceFrequencyCode.div').text.strip }
-  value(:readonly_invoice_type_code) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.invoiceTypeCode.div').text.strip }
+  value(:subfund_program_code_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.programCode.div').text.strip }
+  value(:major_reporting_category_code_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.majorReportingCategoryCode.div').text.strip }
+  value(:appropriation_account_number_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.appropriationAccountNumber.div').text.strip }
+  value(:labor_benefit_rate_category_code_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.laborBenefitRateCategoryCode.div').text.strip }
+  value(:everify_indicator_readonly) { |b| yesno2setclear(b.frm.span(id: 'document.newMaintainableObject.extension.everify.div').text.strip) }
+  value(:cost_share_for_project_number_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.costShareForProjectNumber.div').text.strip }
+  value(:invoice_frequency_code_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.invoiceFrequencyCode.div').text.strip }
+  value(:invoice_type_code_readonly) { |b| b.frm.span(id: 'document.newMaintainableObject.extension.invoiceTypeCode.div').text.strip }
 
-  value(:old_account_extended_data) do |b|
+  value(:account_extended_data_old) do |b|
     {
-      subfund_program_code:             b.old_subfund_program_code,
-      major_reporting_category_code:    b.old_major_reporting_category_code,
-      labor_benefit_rate_category_code: b.old_labor_benefit_rate_category_code,
-      appropriation_account_number:     b.old_appropriation_account_number,
-      everify_indicator:                b.old_everify_indicator,
-      cost_share_for_project_number:    b.old_cost_share_for_project_number,
-      invoice_frequency_code:           b.old_invoice_frequency_code,
-      invoice_type_code:                b.old_invoice_type_code
+      subfund_program_code:             b.subfund_program_code_old,
+      major_reporting_category_code:    b.major_reporting_category_code_old,
+      labor_benefit_rate_category_code: b.labor_benefit_rate_category_code_old,
+      appropriation_account_number:     b.appropriation_account_number_old,
+      everify_indicator:                b.everify_indicator_old,
+      cost_share_for_project_number:    b.cost_share_for_project_number_old,
+      invoice_frequency_code:           b.invoice_frequency_code_old,
+      invoice_type_code:                b.invoice_type_code_old
     }
   end
 
-  value(:new_account_extended_data) do |b|
+  value(:account_extended_data_new) do |b|
     {
-      subfund_program_code:             (b.subfund_program_code.exists? ? b.new_subfund_program_code : b.readonly_subfund_program_code),
-      major_reporting_category_code:    (b.major_reporting_category_code.exists? ? b.new_major_reporting_category_code : b.readonly_major_reporting_category_code),
-      appropriation_account_number:     (b.appropriation_account_number.exists? ? b.new_appropriation_account_number : b.readonly_appropriation_account_number),
-      labor_benefit_rate_category_code: (b.labor_benefit_rate_category_code.exists? ? b.new_labor_benefit_rate_category_code : b.readonly_labor_benefit_rate_category_code),
-      everify_indicator:                (b.everify_indicator.exists? ? b.new_everify_indicator : b.readonly_everify_indicator),
-      cost_share_for_project_number:    (b.cost_share_for_project_number.exists? ? b.new_cost_share_for_project_number : b.readonly_cost_share_for_project_number),
-      invoice_frequency_code:           (b.invoice_frequency_code.exists? ? b.new_invoice_frequency_code : b.readonly_invoice_frequency_code),
-      invoice_type_code:                (b.invoice_type_code.exists? ? b.new_invoice_type_code : b.readonly_invoice_type_code)
+      subfund_program_code:             (b.subfund_program_code.exists? ? b.subfund_program_code_new : b.subfund_program_code_readonly),
+      major_reporting_category_code:    (b.major_reporting_category_code.exists? ? b.major_reporting_category_code_new : b.major_reporting_category_code_readonly),
+      appropriation_account_number:     (b.appropriation_account_number.exists? ? b.appropriation_account_number_new : b.appropriation_account_number_readonly),
+      labor_benefit_rate_category_code: (b.labor_benefit_rate_category_code.exists? ? b.labor_benefit_rate_category_code_new : b.labor_benefit_rate_category_code_readonly),
+      everify_indicator:                (b.everify_indicator.exists? ? b.everify_indicator_new : b.everify_indicator_readonly),
+      cost_share_for_project_number:    (b.cost_share_for_project_number.exists? ? b.cost_share_for_project_number_new : b.cost_share_for_project_number_readonly),
+      invoice_frequency_code:           (b.invoice_frequency_code.exists? ? b.invoice_frequency_code_new : b.invoice_frequency_code_readonly),
+      invoice_type_code:                (b.invoice_type_code.exists? ? b.invoice_type_code_new : b.invoice_type_code_readonly)
     }
   end
 
-  value(:readonly_account_extended_data) do |b|
+  value(:account_extended_data_readonly) do |b|
     {
-      subfund_program_code:             b.readonly_subfund_program_code,
-      major_reporting_category_code:    b.readonly_major_reporting_category_code,
-      appropriation_account_number:     b.readonly_appropriation_account_number,
-      labor_benefit_rate_category_code: b.readonly_labor_benefit_rate_category_code,
-      everify_indicator:                b.readonly_everify_indicator,
-      cost_share_for_project_number:    b.readonly_cost_share_for_project_number,
-      invoice_frequency_code:           b.readonly_invoice_frequency_code,
-      invoice_type_code:                b.readonly_invoice_type_code
+      subfund_program_code:             b.subfund_program_code_readonly,
+      major_reporting_category_code:    b.major_reporting_category_code_readonly,
+      appropriation_account_number:     b.appropriation_account_number_readonly,
+      labor_benefit_rate_category_code: b.labor_benefit_rate_category_code_readonly,
+      everify_indicator:                b.everify_indicator_readonly,
+      cost_share_for_project_number:    b.cost_share_for_project_number_readonly,
+      invoice_frequency_code:           b.invoice_frequency_code_readonly,
+      invoice_type_code:                b.invoice_type_code_readonly
     }
   end
 

@@ -40,12 +40,13 @@ Feature: KFS Fiscal Officer Account Copy
     And   I add an additional Indirect Cost Recovery Account if the Account's Indirect Cost Recovery tab is empty
     And   I submit the Account document
     Then  the document should have no errors
+
     When  I reload the Account document
     Then  the values submitted for the Account document persist
     And   the Account document's route log is:
       | Role                         | Action  |
       | Fiscal Officer               | APPROVE |
-#      | Organization Reviewer        | APPROVE | # Pending verification from Functionals
+      | Organization Reviewer        | APPROVE |
       | Contracts & Grants Processor | APPROVE |
       | Sub-Fund Reviewer            | APPROVE |
 
@@ -61,10 +62,17 @@ Feature: KFS Fiscal Officer Account Copy
     And   I submit the Distribution Of Income And Expense document
     And   I route the Distribution Of Income And Expense document to final
     And   Nightly Batch Jobs run
-    And   I view the Account document
-    Then  the Account document has transactions matching the accounting lines from the Distribution Of Income And Expense document
+    When  I view the Distribution Of Income And Expense document
+    Then  the Account document has General Ledger Balance transactions matching the accounting lines from the Distribution Of Income And Expense document
 #    And validate new account has transactions (should be amount of transaction (times) percent that is assigned to the Account Indirect Cost Recovery Account Type Code.)
 #        Likely object code 9070 or 9080.
-    And   the recovery Accounts specified in the Distribution Of Income And Expense document have posted income transactions
+    And   the recovery Accounts specified in the Distribution Of Income And Expense document have posted income transactions in the General Ledger Balance
 #    Then validate recovery accounts have income transactions posted (should be amount of transaction above (so original expense times type code percent)
 #         (times) percent noted on account line percent of each recovery account.)
+
+
+  #    Well, it's top secret, but here's how.
+  # 1) In the General Ledger Balance lookup screen, enter the fiscal year, chart, and account number on which we want to look for transactions.
+  # 2) Then, click on the fiscal period in the object code used in the transaction to view the list of transactions.
+  # 3) In this list, you should be able to see or "tie" the fiscal year, chart, account number, object code, balance type AC, document type, document number, transaction date, and transaction ledger entry amount.
+  # 4) As noted, the recovery accounts will have the trans amount times the percent rate entered for the account. You could probably tie minimally with doc #, date, object code, and amount. Let me know if you need something more formal or specific.
