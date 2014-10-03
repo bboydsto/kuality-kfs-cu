@@ -1,50 +1,3 @@
-And /^I (#{AccountPage::available_buttons}) an Account document$/ do |button|
-  button.gsub!(' ', '_')
-  @account = create AccountObject, press: button
-  sleep 10 if (button == 'blanket_approve') || (button == 'approve')
-  step 'I add the account to the stack'
-end
-
-And /^I copy an Account$/ do
-  on(AccountLookupPage).copy_random
-  on AccountPage do |page|
-    page.description.fit 'AFT testing copy'
-    page.chart_code.fit get_aft_parameter_value(ParameterConstants::DEFAULT_CHART_CODE)
-    page.number.fit random_alphanums(4, 'AFT')
-    @account = make AccountObject
-    @account.chart_code = page.chart_code.text
-    @account.number = page.number.text
-    @account.description = page.description
-    @account.document_id = page.document_id
-    @document_id = page.document_id
-    page.save
-    page.left_errmsg_text.should include 'Document was successfully saved.'
-  end
-  step 'I add the account to the stack'
-end
-
-And /^I save an Account with a lower case Sub Fund Program$/ do
-  @account = create AccountObject, sub_fund_group_code: 'board', press: :save
-  step 'I add the account to the stack'
-end
-
-When /^I submit an account with blank SubFund group Code$/ do
-  @account = create AccountObject, sub_fund_group_code: '', press: :submit
-  step 'I add the account to the stack'
-end
-
-Then /^I should get an error on saving that I left the SubFund Group Code field blank$/ do
-  on(AccountPage).errors.should include 'Sub-Fund Group Code (SubFundGrpCd) is a required field.'
-end
-
-Then /^the Account Maintenance Document saves with no errors$/  do
-  on(AccountPage).document_status.should == 'SAVED'
-end
-
-Then /^the Account Maintenance Document has no errors$/  do
-  on(AccountPage).document_status.should == 'ENROUTE'
-end
-
 And /^I edit an Account to enter a Sub Fund Program in lower case$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
@@ -71,14 +24,7 @@ When /^I enter a Sub-Fund Program Code of (.*)$/ do |sub_fund_program_code|
   step 'I add the account to the stack'
 end
 
-And /^I edit an Account with a Sub-Fund Group Code of (.*)/ do |sub_fund_group_code|
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.sub_fund_group_code.fit sub_fund_group_code
-    page.search
-    page.edit_random
-  end
-end
+
 
 When /^I enter (.*) as an invalid Major Reporting Category Code$/  do |major_reporting_category_code|
   on AccountPage do |page|
@@ -95,16 +41,6 @@ When /^I enter (.*) as an invalid Appropriation Account Number$/  do |appropriat
     @account = make AccountObject
     page.description.set random_alphanums(40, 'AFT')
     page.appropriation_account_number.fit appropriation_account_number
-    page.save
-  end
-  step 'I add the account to the stack'
-end
-
-When /^I enter (.*) as an invalid Labor Benefit Rate Category Code$/  do |labor_benefit_rate_category_code|
-  on AccountPage do |page|
-    @account = make AccountObject
-    page.description.set random_alphanums(40, 'AFT')
-    page.labor_benefit_rate_category_code.fit labor_benefit_rate_category_code
     page.save
   end
   step 'I add the account to the stack'
@@ -136,7 +72,7 @@ When /^I save an Account document with only the ([^"]*) field populated$/ do |fi
       expense_guideline_text:     'expense guideline text',
       income_guideline_txt: 'incomde guideline text',
       purpose_text:         'purpose text',
-      labor_benefit_rate_cat_code:      'CC'#TODO config?
+      labor_benefit_rate_cat_code: 'CC'#TODO config?
   }
 
   # TODO: Make the Account document creation with a single field step more flexible.
@@ -165,7 +101,8 @@ And /^I edit an Account$/ do
 end
 
 When /^I input a lowercase Major Reporting Category Code value$/  do
-  on(AccountPage).major_reporting_category_code.fit 'faculty'
+  major_reporting_category_code = get_kuali_business_object('KFS-COA','MajorReportingCategory','active=Y')['majorReportingCategoryCode'].sample
+  on(AccountPage).major_reporting_category_code.fit major_reporting_category_code.downcase
 end
 
 And /^I create an Account with an Appropriation Account Number of (.*) and Sub-Fund Program Code of (.*)/ do |appropriation_accountNumber, subfund_program_code|
@@ -178,65 +115,8 @@ And /^I create an Account with an Appropriation Account Number of (.*) and Sub-F
   step 'I add the account to the stack'
 end
 
-And /^I enter Sub Fund Group Code of (.*)/ do |sub_fund_group_code|
-  on(AccountPage).sub_fund_group_code.set sub_fund_group_code
-end
-
-And /^I enter Sub Fund Program Code of (.*)/  do |subfund_program_code|
-  on(AccountPage).subfund_program_code.set subfund_program_code
-end
-
 And /^I enter Appropriation Account Number of (.*)/  do |appropriation_account_number|
   on(AccountPage).appropriation_account_number.set appropriation_account_number
-end
-
-And /^I close the Account$/ do
-  visit(MainPage).account
-
-  # First, let's get a random continuation account
-  random_continuation_account_number = on(AccountLookupPage).get_random_account_number
-  # Now, let's try to close that account
-  on AccountLookupPage do |page|
-    page.chart_code.fit     @account.chart_code
-    page.account_number.fit @account.number
-    page.closed_no.set # There's no point in doing this if the account is already closed. Probably want an error, if a search with this setting fails.
-    page.search
-    page.edit_random # should only select the guy we want, after all
-  end
-  on AccountPage do |page|
-    page.description.fit                 "Closing Account #{@account.number}"
-    page.continuation_account_number.fit random_continuation_account_number
-    page.continuation_chart_code.fit     'IT - Ithaca Campus' #TODO config
-    page.account_expiration_date.fit     page.effective_date.value
-    page.closed.set
-  end
-end
-
-And /^I edit the Account$/ do
-  visit(MainPage).account
-  on AccountLookupPage do |page|
-    page.chart_code.fit @account.chart_code
-    page.account_number.fit @account.number
-    page.search
-    page.edit_random
-  end
-  on AccountPage do |page|
-    page.description.fit 'AFT testing edit'
-    @account.description = 'AFT testing edit'
-    @account.document_id = page.document_id
-  end
-end
-
-And /^I enter a Continuation Chart Of Accounts Code that equals the Chart of Account Code$/ do
-  on(AccountPage) { |page| page.continuation_chart_code.fit page.chart_code.text }
-end
-
-And /^I enter a Continuation Account Number that equals the Account Number$/ do
-  on(AccountPage) { |page| page.continuation_account_number.fit page.original_account_number }
-end
-
-And /^I clone a random Account with the following changes:$/ do |table|
-  step 'I clone Account nil with the following changes:', table
 end
 
 And /^I clone Account (.*) with the following changes:$/ do |account_number, table|
@@ -283,10 +163,6 @@ And /^I clone Account (.*) with the following changes:$/ do |account_number, tab
   end
 end
 
-And /^I extend the Expiration Date of the Account document (\d+) days$/ do |days|
-  on(AccountPage).account_expiration_date.fit (@account.account_expiration_date + days.to_i).strftime('%m/%d/%Y')
-end
-
 And /^I find an expired Account$/ do
   visit(MainPage).account
   on AccountLookupPage do |page|
@@ -327,7 +203,7 @@ And /^I use these Accounts:$/ do |table|
       @account = make AccountObject
       @account.number = page.results_table[1][page.column_index(:account_number)].text
       @account.chart_code = page.results_table[1][page.column_index(:chart_code)].text
-      step 'I add the account to the stack'
+      @accounts = @accounts.nil? ? [@account] : @accounts + [@account]
     end
   end
 
