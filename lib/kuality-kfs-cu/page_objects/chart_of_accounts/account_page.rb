@@ -11,14 +11,14 @@ class AccountPage
   element(:invoice_type_code) { |b| b.frm.select(name: 'document.newMaintainableObject.extension.invoiceTypeCode') }
 
   # New
-  value(:subfund_program_code_new) { |b| b.subfund_program_code.value }
-  value(:major_reporting_category_code_new) { |b| b.major_reporting_category_code.value }
-  value(:appropriation_account_number_new) { |b| b.appropriation_account_number.value }
-  value(:labor_benefit_rate_category_code_new) { |b| b.labor_benefit_rate_category_code.value }
-  value(:everify_indicator_new) { |b| yesno2setclear(b.everify_indicator.set?) }
-  value(:cost_share_for_project_number_new) { |b| b.cost_share_for_project_number.value }
-  value(:invoice_frequency_code_new) { |b| b.invoice_frequency_code.selected_options.first.text }
-  value(:invoice_type_code_new) { |b| b.invoice_type_code.selected_options.first.text }
+  value(:subfund_program_code_new) { |b| b.subfund_program_code.present? ? b.subfund_program_code.value : b.subfund_program_code_readonly }
+  value(:major_reporting_category_code_new) { |b| b.major_reporting_category_code.present? ? b.major_reporting_category_code.value : b.major_reporting_category_code_readonly }
+  value(:appropriation_account_number_new) { |b| b.appropriation_account_number.present? ? b.appropriation_account_number.value : b.appropriation_account_number_readonly }
+  value(:labor_benefit_rate_category_code_new) { |b| b.labor_benefit_rate_category_code.present? ? b.labor_benefit_rate_category_code.value : b.labor_benefit_rate_category_code_readonly }
+  value(:everify_indicator_new) { |b| b.everify_indicator.present? ? yesno2setclear(b.everify_indicator.set?) : b.everify_indicator_readonly }
+  value(:cost_share_for_project_number_new) { |b| b.cost_share_for_project_number.present? ? b.cost_share_for_project_number.value : b.cost_share_for_project_number_readonly }
+  value(:invoice_frequency_code_new) { |b| b.invoice_frequency_code.present? ? b.invoice_frequency_code.selected_options.first.text : b.invoice_frequency_code_readonly }
+  value(:invoice_type_code_new) { |b| b.invoice_type_code.present? ? b.invoice_type_code.selected_options.first.text : b.invoice_type_code_readonly }
 
   # Old
   value(:subfund_program_code_old) { |b| b.frm.span(id: 'document.oldMaintainableObject.extension.programCode.div').text.strip }
