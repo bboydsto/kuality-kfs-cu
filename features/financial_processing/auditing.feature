@@ -14,7 +14,7 @@ Feature: FP Auditing
     And     I submit the Budget Adjustment document
     And     the Budget Adjustment document goes to ENROUTE
     And     I am logged in as a Source Account Fiscal Officer
-    And     I view my Budget Adjustment document
+    And     I view the Budget Adjustment document
     And     on the Budget Adjustment document I modify the From Object Code line item 0 to be 4486
     And     I save the Budget Adjustment document
     Then    The Notes and Attachment Tab displays "Accounting Line changed from"
@@ -77,13 +77,13 @@ Feature: FP Auditing
     Given   I am logged in as a KFS User
     And     I start an empty <document> document
     And     I add a From accounting line to the <document> document with:
-            | from account number |<from account number>|
-            |from object code     |<from object code>   |
-            |from amount          |<from amount>        |
+            | from account number  | <from account number> |
+            | from object code     | <from object code>   |
+            | from amount          | <from amount>        |
     And     I add a To accounting line to the <document> document with:
-            |to account number|<to account number>|
-            |to object code   |<to object code>   |
-            |to amount        |<to amount>        |
+            | to account number | <to account number>|
+            | to object code    | <to object code>   |
+            | to amount         | <to amount>        |
     And     I submit the <document> document
     And     the <document> document goes to ENROUTE
     And     I am logged in as a <From or To> Account Fiscal Officer
