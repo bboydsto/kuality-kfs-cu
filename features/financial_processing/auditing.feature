@@ -77,12 +77,12 @@ Feature: FP Auditing
     And     I start an empty <document> document
     And     I add a From accounting line to the <document> document with:
             | from account number  | <from account number> |
-            | from object code     | <from object code>    |
-            | from amount          | <from amount>         |
+            | from object code     | <from object code>   |
+            | from amount          | <from amount>        |
     And     I add a To accounting line to the <document> document with:
-            | to account number | <to account number> |
-            | to object code    | <to object code>    |
-            | to amount         | <to amount>         |
+            | to account number | <to account number>|
+            | to object code    | <to object code>   |
+            | to amount         | <to amount>        |
     And     I submit the <document> document
     And     the <document> document goes to ENROUTE
     And     I am logged in as a <From or To> Account Fiscal Officer
