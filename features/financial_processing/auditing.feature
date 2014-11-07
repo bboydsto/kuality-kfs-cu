@@ -1,8 +1,7 @@
 Feature: FP Auditing
 
   [KFSQA-631] Cornell University requires an audit trail of changes made by an approver to an eDoc Accounting Line.
-  These changes will be stored recorded in the eDoc Notes and Attachment Tab.
-
+              These changes will be stored recorded in the eDoc Notes and Attachment Tab.
   [KFSQA-747] Display approver eDoc Accounting Line changes in Notes and Attachment Tab for DV and ICA.
 
 
