@@ -26,10 +26,11 @@ Feature: KFS Fiscal Officer Account Creation
     Then  the document status is SAVED
     
   @KFSQA-606 @Bug @AcctEdit @KFSPTS-119 @hare
-  Scenario: Account Edit Sub Fund Program case sensitive test on Submit
+  Scenario: Account Edit Sub Fund Program case sensitive test on Save
     Given I am logged in as a KFS Chart Administrator
     When  I save an Account with a lower case Sub Fund Program
     Then  the Account document goes to SAVED
+    And   the Account document's Sub Fund Program code is uppercased
 
   @KFSQA-556 @Account @Create @KFSMI-7599 @hare
   Scenario: KFS User does not input any fields into Account Guidelines and Purpose Tabs
