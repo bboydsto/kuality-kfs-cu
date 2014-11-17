@@ -18,6 +18,20 @@ World StringFactory
 World DateFactory
 World GlobalConfig
 
+# Explicitly enable both rspec formats. If the tests start failing someday,
+# the new RSpec version has probably completely removed the deprecated
+# .should syntax and you need to revise.
+require 'rspec/core'
+require 'rspec/core/configuration'
+
+RSpec.configure do |config|
+  config.mock_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+end
+
+# End explicit RSpec enablement
+
 if ENV['HEADLESS']
   headless = Headless.new(:reuse           => false,
                           :destroy_at_exit => false)
